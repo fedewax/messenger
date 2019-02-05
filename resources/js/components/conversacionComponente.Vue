@@ -6,18 +6,13 @@
                            footer-border-variant="dark"
                            title="Conversacion activa"
                            class="h-100">
-                        <b-media vertical-algin="center" class="mb-2">
-                            <b-img rounded="circle" slot="aside" blank blank-color="#ccc" 
-                                   width="50" alt="placeholder"/>
-                            <b-card>hola joder tio</b-card>
-                        </b-media>  
-                        
-                        <b-media right-align vertical-align="center" class="mb-2">
-                            <b-img rounded="circle" slot="aside" blank blank-color="#ccc" 
-                                   width="50" alt="placeholder"/>
-                            <b-card>hola joder tio xd</b-card>
-                        </b-media>       
-                    
+                          
+                           <mensaje-componente v-for="mensaje in mensajes" 
+                           :key="mensaje.id"
+                           :miMensaje="mensaje.escrito_por_mi">
+                               {{mensaje.contenido}}
+                           </mensaje-componente>
+                       
                         <div slot="footer" >
                             <b-form class="mb-0">
                                 <b-input-group>
@@ -40,3 +35,24 @@
         </b-row>
     </div>
 </template>
+<script>
+export default {
+    data() {
+        return {
+            mensajes: []
+        }
+    },
+    methods: {
+        getMensajes(){
+            axios.get('/mensajes')
+            .then((response) => {
+                console.log(response.data);
+                this.mensajes = response.data;
+            });
+        }
+    },
+    mounted() {
+       this.getMensajes();
+    },
+}
+</script>
