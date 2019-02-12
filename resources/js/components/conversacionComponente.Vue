@@ -14,12 +14,12 @@
                            </mensaje-componente>
                        
                         <div slot="footer" >
-                            <b-form class="mb-0">
+                            <b-form class="mb-0" @submit.prevent="addMensaje">
                                 <b-input-group>
-                                    <b-form-input type="text">
+                                    <b-form-input v-model="mensaje" type="text">
                                     </b-form-input>
                                     <b-input-group-append>
-                                        <b-button variant="primary">Enviar</b-button>  
+                                        <b-button type="submit" variant="primary">Enviar</b-button>  
                                     </b-input-group-append>
                                 </b-input-group>    
                             </b-form>
@@ -39,7 +39,8 @@
 export default {
     data() {
         return {
-            mensajes: []
+            mensajes : [],
+            mensaje : ''
         }
     },
     methods: {
@@ -48,6 +49,19 @@ export default {
             .then((response) => {
                 console.log(response.data);
                 this.mensajes = response.data;
+            });
+        },
+        addMensaje(){
+            const params = {
+                id : 2,
+                mensaje : this.mensaje 
+            };
+            axios.post('mensajes/agregar',params)
+            .then((response)=>{
+                
+                this.getMensajes();
+                alert("exito");
+                this.mensaje = '';
             });
         }
     },

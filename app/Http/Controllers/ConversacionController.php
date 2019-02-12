@@ -9,7 +9,7 @@ class ConversacionController extends Controller
 {
     public function index()
     {
-        $respuesta = Conversacion::listarConversaciones();
+        return $respuesta = Conversacion::listarConversaciones();
         //dd($respuesta);
     }
 }
