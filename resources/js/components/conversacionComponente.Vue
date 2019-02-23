@@ -14,7 +14,7 @@
                            </mensaje-componente>
                        
                         <div slot="footer" >
-                            <b-form class="mb-0" @submit.prevent="addMensaje">
+                            <b-form class="mb-0" @submit.prevent="addMensaje" autocomplete="off">
                                 <b-input-group>
                                     <b-form-input v-model="mensaje" type="text">
                                     </b-form-input>
@@ -40,14 +40,14 @@ export default {
     data() {
         return {
             mensajes : [],
-            mensaje : ''
+            mensaje : '',
+            id_contac : 2
         }
     },
     methods: {
-        getMensajes(){
+        listarMensajes(){
             axios.get('/mensajes')
             .then((response) => {
-                console.log(response.data);
                 this.mensajes = response.data;
             });
         },
@@ -58,15 +58,13 @@ export default {
             };
             axios.post('mensajes/agregar',params)
             .then((response)=>{
-                
-                this.getMensajes();
-                alert("exito");
+                this.listarMensajes();
                 this.mensaje = '';
             });
         }
     },
     mounted() {
-       this.getMensajes();
+       this.listarMensajes();
     },
 }
 </script>

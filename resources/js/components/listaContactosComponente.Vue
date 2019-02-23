@@ -5,17 +5,31 @@
                 </b-form-input>
     </b-form>
     <b-list-group>
-                <contacto-componente color="dark">
-                </contacto-componente>
 
-                <contacto-componente color="">
-                </contacto-componente>
-
-                <contacto-componente color="primary">
+                <contacto-componente v-for="conversacion in conversaciones" :key="conversacion.id"
+                :conversacion="conversacion">
                 </contacto-componente>
     </b-list-group>
 </div>
 </template>
 <script>
-    
+export default {
+    data() {
+        return {
+            conversaciones: []
+        }
+    },
+    methods: {
+        listarConversaciones(){
+              axios.get('/conversaciones')
+            .then((response) => {
+                this.conversaciones = response.data;
+            });
+        }
+    },
+    mounted() {
+        this.listarConversaciones();
+    },
+}
 </script>
+
