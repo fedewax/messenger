@@ -21,14 +21,6 @@ class ConversacionesTableSeeder extends Seeder
             //'bloqueado' =>''
         ]);
         Conversacion::create([
-            'usuario_id'=>1,
-            'contacto_id'=>3,
-            'ultimo_mensaje'=>null,
-            'tiempo_mensaje'=>null
-            //'notificaciones'=>'',
-            //'bloqueado' =>''
-        ]);
-        Conversacion::create([
             'usuario_id'=>2,
             'contacto_id'=>1,
             'ultimo_mensaje'=>null,
@@ -36,5 +28,23 @@ class ConversacionesTableSeeder extends Seeder
             //'notificaciones'=>'',
             //'bloqueado' =>''
         ]);
+        Conversacion::create([
+            'usuario_id'=>1,
+            'contacto_id'=>3,
+            'ultimo_mensaje'=>null,
+            'tiempo_mensaje'=>null
+            //'notificaciones'=>'',
+            //'bloqueado' =>''
+        ]);
+        
+        Conversacion::create([
+            'usuario_id'=>3,
+            'contacto_id'=>1,
+            'ultimo_mensaje'=>null,
+            'tiempo_mensaje'=>null
+            //'notificaciones'=>'',
+            //'bloqueado' =>''
+        ]);    
+
     }
 }

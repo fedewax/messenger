@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Conversacion extends Model
 {
@@ -27,5 +28,19 @@ class Conversacion extends Model
         'conversaciones.id','conversaciones.usuario_id','conversaciones.contacto_id','conversaciones.ultimo_mensaje',
         'conversaciones.notificacion','conversaciones.bloqueado')
         ->Where('usuario_id', auth()->id())->get();
+    }
+
+    public static function actUiltimoMensaje($mensaje)
+    {
+        $date = Carbon::now()->toDateTimeString();
+        $emisor_id = auth()->id();
+
+        $obj = Conversacion::where('usuario_id', $emisor_id)
+                           ->where('contacto_id', 2)->first();
+
+        $obj->ultimo_mensaje = $mensaje;
+        $obj->tiempo_mensaje = $date;
+        $obj->save();                   
+        
     }
 }

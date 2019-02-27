@@ -22,7 +22,7 @@ class Mensaje extends Model
                 $query->where('emisor_id',$id)->where('receptor_id',$id_contac)->get();
             })->orWhere(function ($query) use ($id,$id_contac){
                 $query->where('emisor_id',$id_contac)->where('receptor_id',$id)->get();
-            })->get();
+            })->orderBy('id', 'asc')->get();
            
     }
     public static function registrarMensaje($array)

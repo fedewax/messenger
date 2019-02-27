@@ -1913,6 +1913,9 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/conversaciones').then(function (response) {
         _this.conversaciones = response.data;
       });
+    },
+    seleccionarConversacion: function seleccionarConversacion() {
+      console.log("hola");
     }
   },
   mounted: function mounted() {
@@ -55328,7 +55331,12 @@ var render = function() {
         _vm._l(_vm.conversaciones, function(conversacion) {
           return _c("contacto-componente", {
             key: conversacion.id,
-            attrs: { conversacion: conversacion }
+            attrs: { conversacion: conversacion },
+            nativeOn: {
+              click: function($event) {
+                _vm.seleccionarConversacion(conversacion)
+              }
+            }
           })
         }),
         1

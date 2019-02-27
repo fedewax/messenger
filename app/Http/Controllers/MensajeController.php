@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Mensaje;
+use App\Conversacion;
+
 
 class MensajeController extends Controller
 {
@@ -16,11 +18,13 @@ class MensajeController extends Controller
     }
     public function store(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        //if (!$request->ajax()) return redirect('/');
         $mensaje = $request->mensaje;
         $id = $request->id;
         $array = array('id' =>  $id,
                        'mensaje' =>  $mensaje);
         $respuesta = Mensaje::registrarMensaje($array);
+        $respuesta = Conversacion::actUiltimoMensaje($mensaje);
+
     }
 }

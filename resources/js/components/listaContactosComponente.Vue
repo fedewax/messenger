@@ -5,9 +5,9 @@
                 </b-form-input>
     </b-form>
     <b-list-group>
-
                 <contacto-componente v-for="conversacion in conversaciones" :key="conversacion.id"
-                :conversacion="conversacion">
+                :conversacion="conversacion"
+                @click.native="seleccionarConversacion(conversacion)">
                 </contacto-componente>
     </b-list-group>
 </div>
@@ -21,10 +21,13 @@ export default {
     },
     methods: {
         listarConversaciones(){
-              axios.get('/conversaciones')
+            axios.get('/conversaciones')
             .then((response) => {
                 this.conversaciones = response.data;
             });
+        },
+        seleccionarConversacion(){
+            console.log("hola");
         }
     },
     mounted() {
