@@ -1840,9 +1840,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    contacto_id: Number
+    contacto_id: Number,
+    nombre_contacto: String
   },
   data: function data() {
     return {
@@ -1868,13 +1870,21 @@ __webpack_require__.r(__webpack_exports__);
       axios.post('mensajes/agregar', params).then(function (response) {
         _this2.listarMensajes();
 
+        _this2.mensajeAgregado();
+
         _this2.mensaje = '';
       });
+    },
+    mensajeAgregado: function mensajeAgregado() {
+      //si se ejecuta el metodo seleccionarConversacion mandamos ejecutar conversacion seleccionada desde el componente padre.
+      this.$emit('mensajeEnviado', this.mensaje);
     }
   },
   mounted: function mounted() {
     this.listarMensajes();
   },
+  //el watch sirve para ver cambos en variables si cambia el valor de contato_id de la conversacion
+  //volvemos a listar los mensajes de la nueva conversacion selecionada
   watch: {
     contacto_id: function contacto_id() {
       this.listarMensajes();
@@ -1908,6 +1918,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    mensaje: String
+  },
   data: function data() {
     return {
       conversaciones: []
@@ -1928,6 +1941,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.listarConversaciones();
+  },
+  watch: {
+    mensaje: function mensaje() {
+      this.listarConversaciones();
+    }
   }
 });
 
@@ -1993,15 +2011,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      datosConversacion: null
+      datosConversacion: null,
+      mensaje: ""
     };
   },
   methods: {
     cargarConversacion: function cargarConversacion(conversacion) {
       this.datosConversacion = conversacion;
+    },
+    nuevoMensaje: function nuevoMensaje(_mensaje) {
+      this.mensaje = _mensaje;
     }
   }
 });
@@ -55329,6 +55353,8 @@ var render = function() {
               _vm._v(" "),
               _c("p", [_vm._v("Usuario seleccioando")]),
               _vm._v(" "),
+              _c("strong", [_vm._v(_vm._s(_vm.nombre_contacto))]),
+              _vm._v(" "),
               _c("hr"),
               _vm._v(" "),
               _c("b-form-checkbox", [_vm._v("Desactivar las notificaciones")])
@@ -55478,6 +55504,7 @@ var render = function() {
             { attrs: { cols: "4" } },
             [
               _c("lista-contactos-componente", {
+                attrs: { mensaje: _vm.mensaje },
                 on: {
                   conversacionSeleccionada: function($event) {
                     _vm.cargarConversacion($event)
@@ -55494,7 +55521,15 @@ var render = function() {
             [
               _vm.datosConversacion
                 ? _c("conversacion-componente", {
-                    attrs: { contacto_id: _vm.datosConversacion.contacto_id }
+                    attrs: {
+                      contacto_id: _vm.datosConversacion.contacto_id,
+                      nombre_contacto: _vm.datosConversacion.nombre_contacto
+                    },
+                    on: {
+                      mensajeEnviado: function($event) {
+                        _vm.nuevoMensaje($event)
+                      }
+                    }
                   })
                 : _vm._e()
             ],

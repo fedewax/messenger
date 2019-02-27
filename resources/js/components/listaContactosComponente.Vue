@@ -14,6 +14,9 @@
 </template>
 <script>
 export default {
+    props:{
+        mensaje : String
+    }, 
     data() {
         return {
             conversaciones: []
@@ -34,6 +37,11 @@ export default {
     mounted() {
         this.listarConversaciones();
     },
+    watch: {
+        mensaje(){
+            this.listarConversaciones();
+        }
+    }
 }
 </script>
 

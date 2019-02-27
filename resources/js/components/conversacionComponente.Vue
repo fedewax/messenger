@@ -29,6 +29,7 @@
                 <b-col cols="4">
                      <b-img rounded="circle" blank width="60" heigth="60" blank-color="#777" alt="img" class="m-1"/>
                      <p>Usuario seleccioando</p>
+                     <strong>{{ nombre_contacto }}</strong>
                      <hr>
                      <b-form-checkbox>Desactivar las notificaciones</b-form-checkbox>
                 </b-col>
@@ -38,7 +39,8 @@
 <script>
 export default {
     props:{
-        contacto_id : Number
+        contacto_id : Number,
+        nombre_contacto : String
     },
     data() {
         return {
@@ -61,13 +63,21 @@ export default {
             axios.post('mensajes/agregar',params)
             .then((response)=>{
                 this.listarMensajes();
+                this.mensajeAgregado();
                 this.mensaje = '';
+               
             });
+        },
+        mensajeAgregado(){
+            //si se ejecuta el metodo seleccionarConversacion mandamos ejecutar conversacion seleccionada desde el componente padre.
+            this.$emit('mensajeEnviado',this.mensaje);
         }
     },
     mounted() {
        this.listarMensajes();
     },
+    //el watch sirve para ver cambos en variables si cambia el valor de contato_id de la conversacion
+    //volvemos a listar los mensajes de la nueva conversacion selecionada
     watch: {
         contacto_id(){
             this.listarMensajes();
