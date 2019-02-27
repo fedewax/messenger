@@ -29,7 +29,7 @@ class Mensaje extends Model
     {
         $obj = new Mensaje();
         $obj->emisor_id = auth()->id();
-        $obj->receptor_id = $array["id"];
+        $obj->receptor_id = $array["contacto_id"];
         $obj->contenido = $array["mensaje"];
         $obj->save();
     }

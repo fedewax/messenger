@@ -1841,18 +1841,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    contacto_id: Number
+  },
   data: function data() {
     return {
       mensajes: [],
-      mensaje: '',
-      id_contac: 2
+      mensaje: ''
     };
   },
   methods: {
     listarMensajes: function listarMensajes() {
       var _this = this;
 
-      axios.get('/mensajes').then(function (response) {
+      axios.get('/mensajes?contacto_id=' + this.contacto_id).then(function (response) {
         _this.mensajes = response.data;
       });
     },
@@ -1860,7 +1862,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       var params = {
-        id: 2,
+        id: this.contacto_id,
         mensaje: this.mensaje
       };
       axios.post('mensajes/agregar', params).then(function (response) {
@@ -1872,6 +1874,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.listarMensajes();
+  },
+  watch: {
+    contacto_id: function contacto_id() {
+      this.listarMensajes();
+    }
   }
 });
 
@@ -1914,8 +1921,9 @@ __webpack_require__.r(__webpack_exports__);
         _this.conversaciones = response.data;
       });
     },
-    seleccionarConversacion: function seleccionarConversacion() {
-      console.log("hola");
+    seleccionarConversacion: function seleccionarConversacion(conversacion) {
+      //si se ejecuta el metodo seleccionarConversacion mandamos ejecutar conversacion seleccionada desde el componente padre.
+      this.$emit('conversacionSeleccionada', conversacion);
     }
   },
   mounted: function mounted() {
@@ -1943,6 +1951,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     miMensaje: Boolean
@@ -1951,6 +1962,48 @@ __webpack_require__.r(__webpack_exports__);
     return {};
   },
   mounted: function mounted() {}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/messengerComponente.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/messengerComponente.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      datosConversacion: null
+    };
+  },
+  methods: {
+    cargarConversacion: function cargarConversacion(conversacion) {
+      this.datosConversacion = conversacion;
+    }
+  }
 });
 
 /***/ }),
@@ -55398,6 +55451,69 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/messengerComponente.vue?vue&type=template&id=24a26f00&":
+/*!**********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/messengerComponente.vue?vue&type=template&id=24a26f00& ***!
+  \**********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "b-container",
+    { staticStyle: { height: "83%" }, attrs: { fluid: "" } },
+    [
+      _c(
+        "b-row",
+        [
+          _c(
+            "b-col",
+            { attrs: { cols: "4" } },
+            [
+              _c("lista-contactos-componente", {
+                on: {
+                  conversacionSeleccionada: function($event) {
+                    _vm.cargarConversacion($event)
+                  }
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "b-col",
+            { attrs: { cols: "8" } },
+            [
+              _vm.datosConversacion
+                ? _c("conversacion-componente", {
+                    attrs: { contacto_id: _vm.datosConversacion.contacto_id }
+                  })
+                : _vm._e()
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js":
 /*!********************************************************************!*\
   !*** ./node_modules/vue-loader/lib/runtime/componentNormalizer.js ***!
@@ -66679,6 +66795,7 @@ Vue.component('contacto-componente', __webpack_require__(/*! ./components/contac
 Vue.component('lista-contactos-componente', __webpack_require__(/*! ./components/listaContactosComponente.vue */ "./resources/js/components/listaContactosComponente.vue").default);
 Vue.component('conversacion-componente', __webpack_require__(/*! ./components/conversacionComponente.vue */ "./resources/js/components/conversacionComponente.vue").default);
 Vue.component('mensaje-componente', __webpack_require__(/*! ./components/mensajeComponente.vue */ "./resources/js/components/mensajeComponente.vue").default);
+Vue.component('messenger-componente', __webpack_require__(/*! ./components/messengerComponente.vue */ "./resources/js/components/messengerComponente.vue").default);
 var app = new Vue({
   el: '#app',
   methods: {
@@ -67027,6 +67144,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_mensajeComponente_vue_vue_type_template_id_63eaa10c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_mensajeComponente_vue_vue_type_template_id_63eaa10c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/messengerComponente.vue":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/messengerComponente.vue ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _messengerComponente_vue_vue_type_template_id_24a26f00___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./messengerComponente.vue?vue&type=template&id=24a26f00& */ "./resources/js/components/messengerComponente.vue?vue&type=template&id=24a26f00&");
+/* harmony import */ var _messengerComponente_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./messengerComponente.vue?vue&type=script&lang=js& */ "./resources/js/components/messengerComponente.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _messengerComponente_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _messengerComponente_vue_vue_type_template_id_24a26f00___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _messengerComponente_vue_vue_type_template_id_24a26f00___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/messengerComponente.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/messengerComponente.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/messengerComponente.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_messengerComponente_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./messengerComponente.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/messengerComponente.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_messengerComponente_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/messengerComponente.vue?vue&type=template&id=24a26f00&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/messengerComponente.vue?vue&type=template&id=24a26f00& ***!
+  \****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_messengerComponente_vue_vue_type_template_id_24a26f00___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./messengerComponente.vue?vue&type=template&id=24a26f00& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/messengerComponente.vue?vue&type=template&id=24a26f00&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_messengerComponente_vue_vue_type_template_id_24a26f00___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_messengerComponente_vue_vue_type_template_id_24a26f00___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

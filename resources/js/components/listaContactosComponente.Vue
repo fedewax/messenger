@@ -26,8 +26,9 @@ export default {
                 this.conversaciones = response.data;
             });
         },
-        seleccionarConversacion(){
-            console.log("hola");
+        seleccionarConversacion(conversacion){
+            //si se ejecuta el metodo seleccionarConversacion mandamos ejecutar conversacion seleccionada desde el componente padre.
+            this.$emit('conversacionSeleccionada',conversacion);
         }
     },
     mounted() {

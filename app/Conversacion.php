@@ -30,17 +30,16 @@ class Conversacion extends Model
         ->Where('usuario_id', auth()->id())->get();
     }
 
-    public static function actUiltimoMensaje($mensaje)
+    public static function actUiltimoMensaje($array)
     {
         $date = Carbon::now()->toDateTimeString();
         $emisor_id = auth()->id();
 
         $obj = Conversacion::where('usuario_id', $emisor_id)
-                           ->where('contacto_id', 2)->first();
+                           ->where('contacto_id', $array["contacto_id"])->first();
 
-        $obj->ultimo_mensaje = $mensaje;
+        $obj->ultimo_mensaje = $array["mensaje"];
         $obj->tiempo_mensaje = $date;
-        $obj->save();                   
-        
+        $obj->save();                       
     }
 }

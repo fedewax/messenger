@@ -13,7 +13,7 @@ class MensajeController extends Controller
     {
         if (!$request->ajax()) return redirect('/');
         $id = auth()->id();
-        $id_cont = 2;
+        $id_cont = $request->contacto_id;
         return $respuesta = Mensaje::listarMensajes($id,$id_cont);
     }
     public function store(Request $request)
@@ -21,10 +21,10 @@ class MensajeController extends Controller
         //if (!$request->ajax()) return redirect('/');
         $mensaje = $request->mensaje;
         $id = $request->id;
-        $array = array('id' =>  $id,
+        $array = array('contacto_id' =>  $id,
                        'mensaje' =>  $mensaje);
         $respuesta = Mensaje::registrarMensaje($array);
-        $respuesta = Conversacion::actUiltimoMensaje($mensaje);
+        $respuesta = Conversacion::actUiltimoMensaje($array);
 
     }
 }

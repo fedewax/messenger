@@ -37,23 +37,25 @@
 </template>
 <script>
 export default {
+    props:{
+        contacto_id : Number
+    },
     data() {
         return {
             mensajes : [],
             mensaje : '',
-            id_contac : 2
         }
     },
     methods: {
         listarMensajes(){
-            axios.get('/mensajes')
+            axios.get('/mensajes?contacto_id='+this.contacto_id)
             .then((response) => {
                 this.mensajes = response.data;
             });
         },
         addMensaje(){
             const params = {
-                id : 2,
+                id : this.contacto_id,
                 mensaje : this.mensaje 
             };
             axios.post('mensajes/agregar',params)
@@ -65,6 +67,11 @@ export default {
     },
     mounted() {
        this.listarMensajes();
+    },
+    watch: {
+        contacto_id(){
+            this.listarMensajes();
+        }
     },
 }
 </script>
