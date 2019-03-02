@@ -24,6 +24,7 @@
                                 </b-input-group>    
                             </b-form>
                         </div>
+                        
                     </b-card>         
                 </b-col>
                 <b-col cols="4">
@@ -40,21 +41,15 @@
 export default {
     props:{
         contacto_id : Number,
-        nombre_contacto : String
+        nombre_contacto : String,
+        mensajes: Array
     },
     data() {
         return {
-            mensajes : [],
-            mensaje : '',
+            mensaje : ''
         }
     },
     methods: {
-        listarMensajes(){
-            axios.get('/mensajes?contacto_id='+this.contacto_id)
-            .then((response) => {
-                this.mensajes = response.data;
-            });
-        },
         addMensaje(){
             const params = {
                 id : this.contacto_id,
@@ -62,10 +57,8 @@ export default {
             };
             axios.post('mensajes/agregar',params)
             .then((response)=>{
-                this.listarMensajes();
                 this.mensajeAgregado();
                 this.mensaje = '';
-               
             });
         },
         mensajeAgregado(){
@@ -74,14 +67,13 @@ export default {
         }
     },
     mounted() {
-       this.listarMensajes();
-    },
+    }
     //el watch sirve para ver cambos en variables si cambia el valor de contato_id de la conversacion
     //volvemos a listar los mensajes de la nueva conversacion selecionada
-    watch: {
-        contacto_id(){
-            this.listarMensajes();
-        }
-    },
+    //watch: {
+      //  contacto_id(){
+      //    this.listarMensajes();
+      //  }
+    //},
 }
 </script>

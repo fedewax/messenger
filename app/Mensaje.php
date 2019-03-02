@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use App\Events\eventMensajeEnviado;
 
 
 class Mensaje extends Model
@@ -27,10 +28,11 @@ class Mensaje extends Model
     }
     public static function registrarMensaje($array)
     {
-        $obj = new Mensaje();
-        $obj->emisor_id = auth()->id();
-        $obj->receptor_id = $array["contacto_id"];
-        $obj->contenido = $array["mensaje"];
-        $obj->save();
+        $mensaje = new Mensaje();
+        $mensaje->emisor_id = auth()->id();
+        $mensaje->receptor_id = $array["contacto_id"];
+        $mensaje->contenido = $array["mensaje"];
+        $mensaje->save();
+        event(new eventMensajeEnviado($mensaje));
     }
 }
