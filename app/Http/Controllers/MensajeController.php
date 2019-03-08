@@ -18,13 +18,14 @@ class MensajeController extends Controller
     }
     public function store(Request $request)
     {
-        //if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
         $mensaje = $request->mensaje;
         $id = $request->id;
         $array = array('contacto_id' =>  $id,
                        'mensaje' =>  $mensaje);
-        $respuesta = Mensaje::registrarMensaje($array);
+        $mensaje = Mensaje::registrarMensaje($array);
         $respuesta = Conversacion::actUiltimoMensaje($array);
-
+       // $respuesta2 = Conversacion::actUiltimoMensajeRecivido($array);
+        return $mensaje;
     }
 }

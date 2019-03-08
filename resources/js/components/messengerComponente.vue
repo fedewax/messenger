@@ -4,12 +4,14 @@
         <b-col cols="4">
             <!--aqui mandamos llamar al metedo conversacionSeleccionada del componente lista-contactos -->    
            <lista-contactos-componente v-on:conversacionSeleccionada="cargarConversacion($event)"
-           :mensaje="mensaje">
+           :mensaje="mensaje"
+>
            </lista-contactos-componente>
         </b-col>       
 
         <b-col cols="8">
            <conversacion-componente v-on:mensajeEnviado="nuevoMensaje($event)"
+           v-on:_datosMensaje="datosMensaje($event)"
            v-if="datosConversacion" 
            :contacto_id="datosConversacion.contacto_id"
            :nombre_contacto="datosConversacion.nombre_contacto"
@@ -44,15 +46,23 @@ export default {
             .then((response) => {
                 this.mensajes = response.data;
             });
+        },
+        datosMensaje(mensaje){
+            if(this.datosConversacion.contacto_id == mensaje.emisor_id
+            || this.datosConversacion.contacto_id == mensaje.receptor_id)
+            {
+              this.mensajes.push(mensaje);
+            }
         }
     },
     mounted() {
-        console.log("si entro");
-        
-        Echo.channel('example') 
-        .listen('eventMensajeEnviado', (e) => {
-            console.log(e);
-        });
+        Echo.channel(`users.${this.user_id}`)
+    		    .listen('eventMensajeEnviado', data => {
+                 const mensaje = data.mensaje;
+                 mensaje.escrito_por_mi = false;
+                 this.datosMensaje(mensaje);
+    	    	 this.nuevoMensaje(mensaje.contenido);
+    		    });
     }
 }
 </script>

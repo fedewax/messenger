@@ -19,6 +19,7 @@ class eventMensajeEnviado implements ShouldBroadcast
      *
      * @return void
      */
+    //los elementos publicos del eventos son enviados a travez del Channel
     public $mensaje;
 
     public function __construct($_mensaje)
@@ -33,6 +34,6 @@ class eventMensajeEnviado implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('example');
+        return new Channel('users.' . $this->mensaje->receptor_id);
     }
 }

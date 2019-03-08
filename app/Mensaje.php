@@ -32,7 +32,8 @@ class Mensaje extends Model
         $mensaje->emisor_id = auth()->id();
         $mensaje->receptor_id = $array["contacto_id"];
         $mensaje->contenido = $array["mensaje"];
-        $mensaje->save();
+        $mensaje->save();  
         event(new eventMensajeEnviado($mensaje));
+        return $mensaje; 
     }
 }

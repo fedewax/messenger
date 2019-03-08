@@ -34,12 +34,20 @@ class Conversacion extends Model
     {
         $date = Carbon::now()->toDateTimeString();
         $emisor_id = auth()->id();
-
+        
+        //actulizar conversacion 1
         $obj = Conversacion::where('usuario_id', $emisor_id)
                            ->where('contacto_id', $array["contacto_id"])->first();
 
         $obj->ultimo_mensaje = $array["mensaje"];
         $obj->tiempo_mensaje = $date;
-        $obj->save();                       
+        $obj->save();
+        //actulizar conversacion 2
+        $obj2 = Conversacion::where('usuario_id', $array["contacto_id"])
+        ->where('contacto_id', $emisor_id)->first();
+
+        $obj2->ultimo_mensaje = $array["mensaje"];
+        $obj2->tiempo_mensaje = $date;
+        $obj2->save();
     }
 }

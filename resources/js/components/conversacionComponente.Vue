@@ -1,18 +1,27 @@
+<style>
+    .card-body-cls{
+        max-height: calc(100vh - 63px);
+        overflow-y: auto;  
+    }    
+</style>
 <template>
     <div>
         <b-row>
                 <b-col cols="8">
-                    <b-card footer-bg-variant="light"
+                    <b-card no-body
+                           footer-bg-variant="light"
                            footer-border-variant="dark"
                            title="Conversacion activa"
                            class="h-100">
                           
+                          <b-card-body class="card-body-cls">
                            <mensaje-componente v-for="mensaje in mensajes" 
                            :key="mensaje.id"
                            :miMensaje="mensaje.escrito_por_mi">
                                {{mensaje.contenido}}
                            </mensaje-componente>
-                       
+                          </b-card-body>
+                        
                         <div slot="footer" >
                             <b-form class="mb-0" @submit.prevent="addMensaje" autocomplete="off">
                                 <b-input-group>
@@ -58,17 +67,28 @@ export default {
             axios.post('mensajes/agregar',params)
             .then((response)=>{
                 this.mensajeAgregado();
+                const mensaje = response.data;
+                mensaje.escrito_por_mi = true;
+                this.$emit('_datosMensaje', mensaje);
+                this.$emit('mensajeEnviado',this.mensaje);
                 this.mensaje = '';
             });
         },
         mensajeAgregado(){
             //si se ejecuta el metodo seleccionarConversacion mandamos ejecutar conversacion seleccionada desde el componente padre.
-            this.$emit('mensajeEnviado',this.mensaje);
+           
+        },
+        scrollAbajo(){
+            const a = document.querySelector('.card-body-cls');
+            a.scrollTop = a.scrollHeight;
         }
     },
     mounted() {
-    }
-    //el watch sirve para ver cambos en variables si cambia el valor de contato_id de la conversacion
+    },
+    updated() {
+        this.scrollAbajo();
+    },
+    //el watch sirve para ver cambos en variables props si cambia el valor de contato_id de la conversacion
     //volvemos a listar los mensajes de la nueva conversacion selecionada
     //watch: {
       //  contacto_id(){
