@@ -1871,8 +1871,6 @@ __webpack_require__.r(__webpack_exports__);
         mensaje: this.mensaje
       };
       axios.post('mensajes/agregar', params).then(function (response) {
-        _this.mensajeAgregado();
-
         var mensaje = response.data;
         mensaje.escrito_por_mi = true;
 
@@ -1882,8 +1880,6 @@ __webpack_require__.r(__webpack_exports__);
 
         _this.mensaje = '';
       });
-    },
-    mensajeAgregado: function mensajeAgregado() {//si se ejecuta el metodo seleccionarConversacion mandamos ejecutar conversacion seleccionada desde el componente padre.
     },
     scrollAbajo: function scrollAbajo() {
       var a = document.querySelector('.card-body-cls');
@@ -1921,9 +1917,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    mensaje: String
+    dMensaje: Object
   },
   data: function data() {
     return {
@@ -1936,6 +1933,8 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('/conversaciones').then(function (response) {
         _this.conversaciones = response.data;
+
+        _this.$emit('listaDeConversaciones', _this.conversaciones);
       });
     },
     seleccionarConversacion: function seleccionarConversacion(conversacion) {
@@ -1947,7 +1946,7 @@ __webpack_require__.r(__webpack_exports__);
     this.listarConversaciones();
   },
   watch: {
-    mensaje: function mensaje() {
+    dMensaje: function dMensaje() {
       this.listarConversaciones();
     }
   }
@@ -2028,7 +2027,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       datosConversacion: null,
       mensaje: "",
-      mensajes: []
+      mensajes: [],
+      dMensaje: null
     };
   },
   methods: {
@@ -2046,10 +2046,16 @@ __webpack_require__.r(__webpack_exports__);
         _this.mensajes = response.data;
       });
     },
-    datosMensaje: function datosMensaje(mensaje) {
-      if (this.datosConversacion.contacto_id == mensaje.emisor_id || this.datosConversacion.contacto_id == mensaje.receptor_id) {
+    datosMensaje: function datosMensaje(_mensaje) {
+      var mensaje = _mensaje;
+      this.dMensaje = mensaje;
+
+      if (this.datosConversacion.contacto_id == _mensaje.emisor_id || this.datosConversacion.contacto_id == _mensaje.receptor_id) {
         this.mensajes.push(mensaje);
       }
+    },
+    listaDeConversaciones: function listaDeConversaciones($_conversaciones) {
+      console.log($_conversaciones);
     }
   },
   mounted: function mounted() {
@@ -2060,8 +2066,6 @@ __webpack_require__.r(__webpack_exports__);
       mensaje.escrito_por_mi = false;
 
       _this2.datosMensaje(mensaje);
-
-      _this2.nuevoMensaje(mensaje.contenido);
     });
   }
 });
@@ -65650,7 +65654,7 @@ var render = function() {
         _vm._l(_vm.conversaciones, function(conversacion) {
           return _c("contacto-componente", {
             key: conversacion.id,
-            attrs: { conversacion: conversacion },
+            attrs: { conversacion: conversacion, dMensaje: _vm.dMensaje },
             nativeOn: {
               click: function($event) {
                 _vm.seleccionarConversacion(conversacion)
@@ -65744,10 +65748,13 @@ var render = function() {
             { attrs: { cols: "4" } },
             [
               _c("lista-contactos-componente", {
-                attrs: { mensaje: _vm.mensaje },
+                attrs: { dMensaje: _vm.dMensaje },
                 on: {
                   conversacionSeleccionada: function($event) {
                     _vm.cargarConversacion($event)
+                  },
+                  listaDeConversaciones: function($event) {
+                    _vm.listaDeConversaciones($event)
                   }
                 }
               })

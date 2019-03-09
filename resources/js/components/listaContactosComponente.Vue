@@ -7,6 +7,7 @@
     <b-list-group>
                 <contacto-componente v-for="conversacion in conversaciones" :key="conversacion.id"
                 :conversacion="conversacion"
+                :dMensaje="dMensaje"
                 @click.native="seleccionarConversacion(conversacion)">
                 </contacto-componente>
     </b-list-group>
@@ -15,7 +16,7 @@
 <script>
 export default {
     props:{
-        mensaje : String
+        dMensaje : Object
     }, 
     data() {
         return {
@@ -27,6 +28,7 @@ export default {
             axios.get('/conversaciones')
             .then((response) => {
                 this.conversaciones = response.data;
+                this.$emit('listaDeConversaciones', this.conversaciones);
             });
         },
         seleccionarConversacion(conversacion){
@@ -38,7 +40,7 @@ export default {
         this.listarConversaciones();
     },
     watch: {
-        mensaje(){
+        dMensaje(){
             this.listarConversaciones();
         }
     }

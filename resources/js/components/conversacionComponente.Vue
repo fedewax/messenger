@@ -66,17 +66,12 @@ export default {
             };
             axios.post('mensajes/agregar',params)
             .then((response)=>{
-                this.mensajeAgregado();
                 const mensaje = response.data;
                 mensaje.escrito_por_mi = true;
                 this.$emit('_datosMensaje', mensaje);
                 this.$emit('mensajeEnviado',this.mensaje);
                 this.mensaje = '';
             });
-        },
-        mensajeAgregado(){
-            //si se ejecuta el metodo seleccionarConversacion mandamos ejecutar conversacion seleccionada desde el componente padre.
-           
         },
         scrollAbajo(){
             const a = document.querySelector('.card-body-cls');

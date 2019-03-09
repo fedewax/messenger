@@ -4,8 +4,8 @@
         <b-col cols="4">
             <!--aqui mandamos llamar al metedo conversacionSeleccionada del componente lista-contactos -->    
            <lista-contactos-componente v-on:conversacionSeleccionada="cargarConversacion($event)"
-           :mensaje="mensaje"
->
+           v-on:listaDeConversaciones="listaDeConversaciones($event)"
+           :dMensaje="dMensaje">
            </lista-contactos-componente>
         </b-col>       
 
@@ -30,7 +30,8 @@ export default {
         return {
             datosConversacion : null,
             mensaje : "",
-            mensajes : []
+            mensajes : [],
+            dMensaje : null
         }
     },
     methods: {
@@ -47,12 +48,17 @@ export default {
                 this.mensajes = response.data;
             });
         },
-        datosMensaje(mensaje){
-            if(this.datosConversacion.contacto_id == mensaje.emisor_id
-            || this.datosConversacion.contacto_id == mensaje.receptor_id)
+        datosMensaje(_mensaje){
+            const mensaje = _mensaje 
+            this.dMensaje = mensaje;
+            if(this.datosConversacion.contacto_id == _mensaje.emisor_id
+            || this.datosConversacion.contacto_id == _mensaje.receptor_id)
             {
               this.mensajes.push(mensaje);
             }
+        },
+        listaDeConversaciones($_conversaciones){
+            console.log($_conversaciones);
         }
     },
     mounted() {
@@ -61,7 +67,6 @@ export default {
                  const mensaje = data.mensaje;
                  mensaje.escrito_por_mi = false;
                  this.datosMensaje(mensaje);
-    	    	 this.nuevoMensaje(mensaje.contenido);
     		    });
     }
 }

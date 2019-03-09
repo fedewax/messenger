@@ -44,7 +44,7 @@ class Conversacion extends Model
         $obj->save();
         //actulizar conversacion 2
         $obj2 = Conversacion::where('usuario_id', $array["contacto_id"])
-        ->where('contacto_id', $emisor_id)->first();
+                            ->where('contacto_id', $emisor_id)->first();
 
         $obj2->ultimo_mensaje = $array["mensaje"];
         $obj2->tiempo_mensaje = $date;
