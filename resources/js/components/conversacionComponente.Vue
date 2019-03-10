@@ -69,7 +69,6 @@ export default {
                 const mensaje = response.data;
                 mensaje.escrito_por_mi = true;
                 this.$emit('_datosMensaje', mensaje);
-                this.$emit('mensajeEnviado',this.mensaje);
                 this.mensaje = '';
             });
         },

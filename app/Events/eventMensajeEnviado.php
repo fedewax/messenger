@@ -34,6 +34,6 @@ class eventMensajeEnviado implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('users.' . $this->mensaje->receptor_id);
+        return new PrivateChannel('users.' . $this->mensaje->receptor_id);
     }
 }

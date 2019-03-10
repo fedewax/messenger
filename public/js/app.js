@@ -1781,6 +1781,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     variant: String,
@@ -1876,8 +1881,6 @@ __webpack_require__.r(__webpack_exports__);
 
         _this.$emit('_datosMensaje', mensaje);
 
-        _this.$emit('mensajeEnviado', _this.mensaje);
-
         _this.mensaje = '';
       });
     },
@@ -1932,9 +1935,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('/conversaciones').then(function (response) {
-        _this.conversaciones = response.data;
-
-        _this.$emit('listaDeConversaciones', _this.conversaciones);
+        _this.conversaciones = response.data; //this.$emit('listaDeConversaciones', this.conversaciones);
       });
     },
     seleccionarConversacion: function seleccionarConversacion(conversacion) {
@@ -2036,9 +2037,6 @@ __webpack_require__.r(__webpack_exports__);
       this.datosConversacion = conversacion;
       this.listarMensajes();
     },
-    nuevoMensaje: function nuevoMensaje(_mensaje) {
-      this.mensaje = _mensaje;
-    },
     listarMensajes: function listarMensajes() {
       var _this = this;
 
@@ -2050,18 +2048,17 @@ __webpack_require__.r(__webpack_exports__);
       var mensaje = _mensaje;
       this.dMensaje = mensaje;
 
-      if (this.datosConversacion.contacto_id == _mensaje.emisor_id || this.datosConversacion.contacto_id == _mensaje.receptor_id) {
-        this.mensajes.push(mensaje);
+      if (this.datosConversacion != null) {
+        if (this.datosConversacion.contacto_id == _mensaje.emisor_id || this.datosConversacion.contacto_id == _mensaje.receptor_id) {
+          this.mensajes.push(mensaje);
+        }
       }
-    },
-    listaDeConversaciones: function listaDeConversaciones($_conversaciones) {
-      console.log($_conversaciones);
     }
   },
   mounted: function mounted() {
     var _this2 = this;
 
-    Echo.channel("users.".concat(this.user_id)).listen('eventMensajeEnviado', function (data) {
+    Echo.private("users.".concat(this.user_id)).listen('eventMensajeEnviado', function (data) {
       var mensaje = data.mensaje;
       mensaje.escrito_por_mi = false;
 
@@ -65425,12 +65422,25 @@ var render = function() {
             },
             [
               _c("p", { staticClass: "mb-1" }, [
-                _vm._v(_vm._s(_vm.conversacion.nombre_contacto))
+                _c("strong", [_vm._v(_vm._s(_vm.conversacion.nombre_contacto))])
               ]),
               _vm._v(" "),
-              _c("p", { staticClass: "text-muted small mb-1" }, [
-                _vm._v(_vm._s(_vm.conversacion.ultimo_mensaje))
-              ])
+              _vm.conversacion.user_ultimo_mensaje ==
+              _vm.conversacion.usuario_id
+                ? _c("div", [
+                    _c("p", { staticClass: "text-muted small mb-1" }, [
+                      _c("strong", [_vm._v("Tu:")]),
+                      _vm._v(" " + _vm._s(_vm.conversacion.ultimo_mensaje))
+                    ])
+                  ])
+                : _c("div", [
+                    _c("p", { staticClass: "text-muted small mb-1" }, [
+                      _c("strong", [
+                        _vm._v(_vm._s(_vm.conversacion.nombre_contacto) + ":")
+                      ]),
+                      _vm._v(" " + _vm._s(_vm.conversacion.ultimo_mensaje))
+                    ])
+                  ])
             ]
           ),
           _vm._v(" "),
@@ -65752,9 +65762,6 @@ var render = function() {
                 on: {
                   conversacionSeleccionada: function($event) {
                     _vm.cargarConversacion($event)
-                  },
-                  listaDeConversaciones: function($event) {
-                    _vm.listaDeConversaciones($event)
                   }
                 }
               })
@@ -65774,9 +65781,6 @@ var render = function() {
                       mensajes: _vm.mensajes
                     },
                     on: {
-                      mensajeEnviado: function($event) {
-                        _vm.nuevoMensaje($event)
-                      },
                       _datosMensaje: function($event) {
                         _vm.datosMensaje($event)
                       }

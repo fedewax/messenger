@@ -5,8 +5,13 @@
                 <b-img rounded="circle" blank width="60" heigth="60" blank-color="#777" alt="img" class="m-1"/>
             </b-col>
             <b-col cols="6" algin-self="center" class="d-none d-md-block">
-                <p class="mb-1">{{ conversacion.nombre_contacto }}</p>
-                <p class="text-muted small mb-1">{{ conversacion.ultimo_mensaje}}</p>
+                <p class="mb-1"><strong>{{ conversacion.nombre_contacto }}</strong></p>
+                <div v-if="conversacion.user_ultimo_mensaje == conversacion.usuario_id"> 
+                    <p class="text-muted small mb-1"><strong>Tu:</strong> {{ conversacion.ultimo_mensaje}}</p>
+                </div>
+                <div v-else> 
+                    <p class="text-muted small mb-1"><strong>{{conversacion.nombre_contacto}}:</strong> {{ conversacion.ultimo_mensaje}}</p>
+                </div>
             </b-col>
             <b-col cols="3" class="d-none d-md-block">
                 <p class="text-muted small">{{ conversacion.tiempo_mensaje}}</p>
@@ -27,7 +32,7 @@
 
             }
         },
-        mounted() {
+        mounted(){
         }
     }
 </script>

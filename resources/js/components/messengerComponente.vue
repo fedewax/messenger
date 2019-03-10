@@ -4,13 +4,13 @@
         <b-col cols="4">
             <!--aqui mandamos llamar al metedo conversacionSeleccionada del componente lista-contactos -->    
            <lista-contactos-componente v-on:conversacionSeleccionada="cargarConversacion($event)"
-           v-on:listaDeConversaciones="listaDeConversaciones($event)"
            :dMensaje="dMensaje">
+           <!--v-on:listaDeConversaciones="listaDeConversaciones($event)"-->
            </lista-contactos-componente>
         </b-col>       
 
         <b-col cols="8">
-           <conversacion-componente v-on:mensajeEnviado="nuevoMensaje($event)"
+           <conversacion-componente
            v-on:_datosMensaje="datosMensaje($event)"
            v-if="datosConversacion" 
            :contacto_id="datosConversacion.contacto_id"
@@ -39,9 +39,6 @@ export default {
             this.datosConversacion = conversacion;
             this.listarMensajes();
         },
-        nuevoMensaje(_mensaje) {
-            this.mensaje = _mensaje;
-        },
         listarMensajes(){
             axios.get('/mensajes?contacto_id='+this.datosConversacion.contacto_id)
             .then((response) => {
@@ -51,18 +48,18 @@ export default {
         datosMensaje(_mensaje){
             const mensaje = _mensaje 
             this.dMensaje = mensaje;
-            if(this.datosConversacion.contacto_id == _mensaje.emisor_id
-            || this.datosConversacion.contacto_id == _mensaje.receptor_id)
+            if(this.datosConversacion != null)
             {
-              this.mensajes.push(mensaje);
+                if(this.datosConversacion.contacto_id == _mensaje.emisor_id
+                || this.datosConversacion.contacto_id == _mensaje.receptor_id)
+                {
+                   this.mensajes.push(mensaje);
+                }
             }
-        },
-        listaDeConversaciones($_conversaciones){
-            console.log($_conversaciones);
         }
     },
     mounted() {
-        Echo.channel(`users.${this.user_id}`)
+        Echo.private(`users.${this.user_id}`)
     		    .listen('eventMensajeEnviado', data => {
                  const mensaje = data.mensaje;
                  mensaje.escrito_por_mi = false;

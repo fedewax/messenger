@@ -10,10 +10,10 @@ class Conversacion extends Model
     protected $table = 'conversaciones';
 
     protected $filelable = [
-        'id','usuario_id','contacto_id','ultimo_mensaje','tiempo_mensaje','notificacion','bloqueado',
+        'id','usuario_id','contacto_id','ultimo_mensaje','tiempo_mensaje','notificacion','bloqueado', 'user_ultimo_mensaje',
         'users.id','users.name as nombre_contacto',
         'conversaciones.id','conversaciones.usuario_id','conversaciones.contacto_id','conversaciones.ultimo_mensaje',
-        'conversaciones.notificacion','conversaciones.bloqueado'
+        'conversaciones.notificacion','conversaciones.bloqueado','conversaciones.user_ultimo_mensaje'
     ];
 
     public function user()
@@ -23,10 +23,10 @@ class Conversacion extends Model
     public static function listarConversaciones()
     {
         return self::join('users','users.id','=','conversaciones.contacto_id')
-        ->select('conversaciones.id','usuario_id','contacto_id','ultimo_mensaje','tiempo_mensaje','notificacion','bloqueado',
+        ->select('conversaciones.id','usuario_id','contacto_id','ultimo_mensaje','tiempo_mensaje','notificacion','bloqueado','user_ultimo_mensaje',
         'users.id','users.name as nombre_contacto',
         'conversaciones.id','conversaciones.usuario_id','conversaciones.contacto_id','conversaciones.ultimo_mensaje',
-        'conversaciones.notificacion','conversaciones.bloqueado')
+        'conversaciones.notificacion','conversaciones.bloqueado','conversaciones.user_ultimo_mensaje')
         ->Where('usuario_id', auth()->id())->get();
     }
 
@@ -41,13 +41,16 @@ class Conversacion extends Model
 
         $obj->ultimo_mensaje = $array["mensaje"];
         $obj->tiempo_mensaje = $date;
+        $obj->user_ultimo_mensaje = $emisor_id;
         $obj->save();
+
         //actulizar conversacion 2
         $obj2 = Conversacion::where('usuario_id', $array["contacto_id"])
                             ->where('contacto_id', $emisor_id)->first();
 
         $obj2->ultimo_mensaje = $array["mensaje"];
         $obj2->tiempo_mensaje = $date;
+        $obj2->user_ultimo_mensaje = $emisor_id;
         $obj2->save();
     }
 }
