@@ -1786,6 +1786,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     variant: String,
@@ -1871,6 +1888,7 @@ __webpack_require__.r(__webpack_exports__);
     addMensaje: function addMensaje() {
       var _this = this;
 
+      if (!this.mensaje) return;
       var params = {
         id: this.contacto_id,
         mensaje: this.mensaje
@@ -1935,7 +1953,9 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('/conversaciones').then(function (response) {
-        _this.conversaciones = response.data; //this.$emit('listaDeConversaciones', this.conversaciones);
+        _this.conversaciones = response.data;
+
+        _this.$emit('listaDeConversaciones', _this.conversaciones);
       });
     },
     seleccionarConversacion: function seleccionarConversacion(conversacion) {
@@ -1976,12 +1996,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    miMensaje: Boolean
+    miMensaje: Boolean,
+    mensaje: String
   },
   data: function data() {
-    return {};
+    return {
+      mainProps: {
+        blank: true,
+        blankColor: '#777',
+        width: 65,
+        height: 65,
+        class: 'm1'
+      }
+    };
   },
   mounted: function mounted() {}
 });
@@ -2020,6 +2050,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     user_id: Number
@@ -2027,15 +2058,18 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       datosConversacion: null,
-      mensaje: "",
       mensajes: [],
-      dMensaje: null
+      dMensaje: null,
+      conversaciones: []
     };
   },
   methods: {
     cargarConversacion: function cargarConversacion(conversacion) {
       this.datosConversacion = conversacion;
       this.listarMensajes();
+    },
+    cargarConversaciones: function cargarConversaciones(_conversaciones) {
+      this.conversaciones = _conversaciones;
     },
     listarMensajes: function listarMensajes() {
       var _this = this;
@@ -2053,6 +2087,12 @@ __webpack_require__.r(__webpack_exports__);
           this.mensajes.push(mensaje);
         }
       }
+    },
+    cambiarEstadoOnline: function cambiarEstadoOnline(user, status) {
+      var index = this.conversaciones.findIndex(function (conversacion) {
+        return conversacion.contacto_id == user.id;
+      });
+      if (index >= 0) Vue.set(this.conversaciones[index], 'online', status);
     }
   },
   mounted: function mounted() {
@@ -2063,6 +2103,16 @@ __webpack_require__.r(__webpack_exports__);
       mensaje.escrito_por_mi = false;
 
       _this2.datosMensaje(mensaje);
+    });
+    Echo.join('messenger').here(function (users) {
+      //los que ya estan en el canala tambiene estan online  
+      users.forEach(function (user) {
+        return _this2.cambiarEstadoOnline(user, true);
+      });
+    }).joining(function (user) {
+      _this2.cambiarEstadoOnline(user, true);
+    }).leaving(function (user) {
+      _this2.cambiarEstadoOnline(user, false);
     });
   }
 });
@@ -65421,16 +65471,51 @@ var render = function() {
               attrs: { cols: "6", "algin-self": "center" }
             },
             [
-              _c("p", { staticClass: "mb-1" }, [
-                _c("strong", [_vm._v(_vm._s(_vm.conversacion.nombre_contacto))])
-              ]),
+              _c(
+                "p",
+                { staticClass: "mb-1" },
+                [
+                  _vm.conversacion.online
+                    ? _c("b-img", {
+                        staticClass: "m-1",
+                        attrs: {
+                          rounded: "circle",
+                          blank: "",
+                          width: "10",
+                          heigth: "10",
+                          "blank-color": "green",
+                          alt: "img"
+                        }
+                      })
+                    : _c("b-img", {
+                        staticClass: "m-1",
+                        attrs: {
+                          rounded: "circle",
+                          blank: "",
+                          width: "10",
+                          heigth: "10",
+                          "blank-color": "red",
+                          alt: "img"
+                        }
+                      }),
+                  _vm._v(" "),
+                  _c("strong", [
+                    _vm._v(_vm._s(_vm.conversacion.nombre_contacto))
+                  ])
+                ],
+                1
+              ),
               _vm._v(" "),
               _vm.conversacion.user_ultimo_mensaje ==
               _vm.conversacion.usuario_id
                 ? _c("div", [
                     _c("p", { staticClass: "text-muted small mb-1" }, [
                       _c("strong", [_vm._v("Tu:")]),
-                      _vm._v(" " + _vm._s(_vm.conversacion.ultimo_mensaje))
+                      _vm._v(
+                        " " +
+                          _vm._s(_vm.conversacion.ultimo_mensaje) +
+                          "\n                "
+                      )
                     ])
                   ])
                 : _c("div", [
@@ -65438,7 +65523,11 @@ var render = function() {
                       _c("strong", [
                         _vm._v(_vm._s(_vm.conversacion.nombre_contacto) + ":")
                       ]),
-                      _vm._v(" " + _vm._s(_vm.conversacion.ultimo_mensaje))
+                      _vm._v(
+                        " " +
+                          _vm._s(_vm.conversacion.ultimo_mensaje) +
+                          "\n                "
+                      )
                     ])
                   ])
             ]
@@ -65508,20 +65597,13 @@ var render = function() {
                     "b-card-body",
                     { staticClass: "card-body-cls" },
                     _vm._l(_vm.mensajes, function(mensaje) {
-                      return _c(
-                        "mensaje-componente",
-                        {
-                          key: mensaje.id,
-                          attrs: { miMensaje: mensaje.escrito_por_mi }
-                        },
-                        [
-                          _vm._v(
-                            "\n                           " +
-                              _vm._s(mensaje.contenido) +
-                              "\n                       "
-                          )
-                        ]
-                      )
+                      return _c("mensaje-componente", {
+                        key: mensaje.id,
+                        attrs: {
+                          miMensaje: mensaje.escrito_por_mi,
+                          mensaje: mensaje.contenido
+                        }
+                      })
                     }),
                     1
                   ),
@@ -65563,10 +65645,7 @@ var render = function() {
                                   _c(
                                     "b-button",
                                     {
-                                      attrs: {
-                                        type: "submit",
-                                        variant: "primary"
-                                      }
+                                      attrs: { type: "submit", variant: "info" }
                                     },
                                     [_vm._v("Enviar")]
                                   )
@@ -65707,19 +65786,38 @@ var render = function() {
       attrs: { "right-align": _vm.miMensaje, "vertical-align": "center" }
     },
     [
-      _c("b-img", {
-        attrs: {
-          slot: "aside",
-          rounded: "circle",
-          blank: "",
-          "blank-color": "#ccc",
-          width: "50",
-          alt: "placeholder"
-        },
-        slot: "aside"
-      }),
+      _c(
+        "b-img",
+        _vm._b(
+          {
+            attrs: { slot: "aside", rounded: "", alt: "Rounded image" },
+            slot: "aside"
+          },
+          "b-img",
+          _vm.mainProps,
+          false
+        )
+      ),
       _vm._v(" "),
-      _c("b-card", [_vm._t("default")], 2)
+      _vm.miMensaje
+        ? _c(
+            "div",
+            [
+              _c("b-alert", { attrs: { show: "", variant: "info" } }, [
+                _vm._v(_vm._s(_vm.mensaje))
+              ])
+            ],
+            1
+          )
+        : _c(
+            "div",
+            [
+              _c("b-alert", { attrs: { show: "", variant: "secondary" } }, [
+                _vm._v(_vm._s(_vm.mensaje))
+              ])
+            ],
+            1
+          )
     ],
     1
   )
@@ -65762,6 +65860,9 @@ var render = function() {
                 on: {
                   conversacionSeleccionada: function($event) {
                     _vm.cargarConversacion($event)
+                  },
+                  listaDeConversaciones: function($event) {
+                    _vm.cargarConversaciones($event)
                   }
                 }
               })

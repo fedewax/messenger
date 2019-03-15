@@ -4,6 +4,7 @@
         <b-col cols="4">
             <!--aqui mandamos llamar al metedo conversacionSeleccionada del componente lista-contactos -->    
            <lista-contactos-componente v-on:conversacionSeleccionada="cargarConversacion($event)"
+           v-on:listaDeConversaciones="cargarConversaciones($event)"
            :dMensaje="dMensaje">
            <!--v-on:listaDeConversaciones="listaDeConversaciones($event)"-->
            </lista-contactos-componente>
@@ -29,15 +30,18 @@ export default {
     data() {
         return {
             datosConversacion : null,
-            mensaje : "",
             mensajes : [],
-            dMensaje : null
+            dMensaje : null,
+            conversaciones : []
         }
     },
     methods: {
         cargarConversacion(conversacion) {
             this.datosConversacion = conversacion;
             this.listarMensajes();
+        },
+        cargarConversaciones(_conversaciones){
+            this.conversaciones = _conversaciones; 
         },
         listarMensajes(){
             axios.get('/mensajes?contacto_id='+this.datosConversacion.contacto_id)
@@ -56,15 +60,34 @@ export default {
                    this.mensajes.push(mensaje);
                 }
             }
+        },
+        cambiarEstadoOnline(user, status){
+                const index = this.conversaciones.findIndex((conversacion) =>{
+                    return conversacion.contacto_id == user.id;
+                });
+                if(index >= 0)
+                    Vue.set(this.conversaciones[index],'online', status);
         }
     },
     mounted() {
         Echo.private(`users.${this.user_id}`)
-    		    .listen('eventMensajeEnviado', data => {
+    		.listen('eventMensajeEnviado', data => {
                  const mensaje = data.mensaje;
                  mensaje.escrito_por_mi = false;
                  this.datosMensaje(mensaje);
     		    });
+       
+        Echo.join('messenger')
+            .here((users)=>{
+                //los que ya estan en el canala tambiene estan online  
+                users.forEach((user) => this.cambiarEstadoOnline(user, true));
+            })
+            .joining((user)=>{
+                this.cambiarEstadoOnline(user,true);
+            })
+            .leaving((user)=>{
+                this.cambiarEstadoOnline(user,false);
+            });
     }
 }
 </script>

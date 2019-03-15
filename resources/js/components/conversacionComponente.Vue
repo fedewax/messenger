@@ -17,8 +17,8 @@
                           <b-card-body class="card-body-cls">
                            <mensaje-componente v-for="mensaje in mensajes" 
                            :key="mensaje.id"
-                           :miMensaje="mensaje.escrito_por_mi">
-                               {{mensaje.contenido}}
+                           :miMensaje="mensaje.escrito_por_mi"
+                           :mensaje ="mensaje.contenido">
                            </mensaje-componente>
                           </b-card-body>
                         
@@ -28,7 +28,7 @@
                                     <b-form-input v-model="mensaje" type="text">
                                     </b-form-input>
                                     <b-input-group-append>
-                                        <b-button type="submit" variant="primary">Enviar</b-button>  
+                                        <b-button type="submit" variant="info">Enviar</b-button>  
                                     </b-input-group-append>
                                 </b-input-group>    
                             </b-form>
@@ -60,6 +60,10 @@ export default {
     },
     methods: {
         addMensaje(){
+            
+            if(!this.mensaje)
+            return;
+            
             const params = {
                 id : this.contacto_id,
                 mensaje : this.mensaje 
@@ -71,6 +75,7 @@ export default {
                 this.$emit('_datosMensaje', mensaje);
                 this.mensaje = '';
             });
+            
         },
         scrollAbajo(){
             const a = document.querySelector('.card-body-cls');

@@ -28,7 +28,7 @@ export default {
             axios.get('/conversaciones')
             .then((response) => {
                 this.conversaciones = response.data;
-                //this.$emit('listaDeConversaciones', this.conversaciones);
+                this.$emit('listaDeConversaciones', this.conversaciones);
             });
         },
         seleccionarConversacion(conversacion){
