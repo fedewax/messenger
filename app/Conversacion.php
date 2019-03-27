@@ -10,10 +10,10 @@ class Conversacion extends Model
     protected $table = 'conversaciones';
 
     protected $filelable = [
-        'id','usuario_id','contacto_id','ultimo_mensaje','tiempo_mensaje','notificacion','bloqueado', 'user_ultimo_mensaje',
+        'id','usuario_id','contacto_id','ultimo_mensaje','tiempo_mensaje','notificacion','bloqueado', 'user_ultimo_mensaje','online',
         'users.id','users.name as nombre_contacto',
         'conversaciones.id','conversaciones.usuario_id','conversaciones.contacto_id','conversaciones.ultimo_mensaje',
-        'conversaciones.notificacion','conversaciones.bloqueado','conversaciones.user_ultimo_mensaje'
+        'conversaciones.notificacion','conversaciones.bloqueado','conversaciones.user_ultimo_mensaje','conversaciones.online'
     ];
 
     public function user()
@@ -23,10 +23,10 @@ class Conversacion extends Model
     public static function listarConversaciones()
     {
         return self::join('users','users.id','=','conversaciones.contacto_id')
-        ->select('conversaciones.id','usuario_id','contacto_id','ultimo_mensaje','tiempo_mensaje','notificacion','bloqueado','user_ultimo_mensaje',
+        ->select('conversaciones.id','usuario_id','contacto_id','ultimo_mensaje','tiempo_mensaje','notificacion','bloqueado','user_ultimo_mensaje','online',
         'users.id','users.name as nombre_contacto',
         'conversaciones.id','conversaciones.usuario_id','conversaciones.contacto_id','conversaciones.ultimo_mensaje',
-        'conversaciones.notificacion','conversaciones.bloqueado','conversaciones.user_ultimo_mensaje')
+        'conversaciones.notificacion','conversaciones.bloqueado','conversaciones.user_ultimo_mensaje','conversaciones.online')
         ->Where('usuario_id', auth()->id())->get();
     }
 
@@ -52,5 +52,10 @@ class Conversacion extends Model
         $obj2->tiempo_mensaje = $date;
         $obj2->user_ultimo_mensaje = $emisor_id;
         $obj2->save();
+    }
+
+    public static function cambiarEstadoOnlineModel($array)
+    {
+        $obj = Conversacion::where('contacto_id', $array["id"])->update(['online'=> $array["online"]]);
     }
 }

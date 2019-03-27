@@ -4,7 +4,7 @@
         <b-col cols="4">
             <!--aqui mandamos llamar al metedo conversacionSeleccionada del componente lista-contactos -->    
            <lista-contactos-componente v-on:conversacionSeleccionada="cargarConversacion($event)"
-           v-on:listaDeConversaciones="cargarConversaciones($event)"
+           :conversaciones="conversaciones"
            :dMensaje="dMensaje">
            <!--v-on:listaDeConversaciones="listaDeConversaciones($event)"-->
            </lista-contactos-componente>
@@ -40,8 +40,12 @@ export default {
             this.datosConversacion = conversacion;
             this.listarMensajes();
         },
-        cargarConversaciones(_conversaciones){
-            this.conversaciones = _conversaciones; 
+         listarConversaciones(){
+            axios.get('/conversaciones')
+            .then((response) => {
+                this.conversaciones = response.data;
+            });
+            
         },
         listarMensajes(){
             axios.get('/mensajes?contacto_id='+this.datosConversacion.contacto_id)
@@ -61,33 +65,54 @@ export default {
                 }
             }
         },
-        cambiarEstadoOnline(user, status){
-                const index = this.conversaciones.findIndex((conversacion) =>{
-                    return conversacion.contacto_id == user.id;
+        cambiarEstadoOnline(id, status){
+                //const index = this.conversaciones.findIndex((conversacion) =>{
+                //   return conversacion.contacto_id == user.id;
+                //});
+                //if(index >= 0)
+                  //  Vue.set(this.conversaciones[index],'online', status);
+                //alert(id,status);
+
+                const params = {
+                id : id,
+                online : status
+                };
+                axios.post('/cambiarEstadoOnline',params)
+                .then((response)=>{
+                    console.log(response.data);
                 });
-                if(index >= 0)
-                    Vue.set(this.conversaciones[index],'online', status);
-        }
+        },
+      
     },
     mounted() {
+        this.listarConversaciones();
         Echo.private(`users.${this.user_id}`)
     		.listen('eventMensajeEnviado', data => {
                  const mensaje = data.mensaje;
                  mensaje.escrito_por_mi = false;
                  this.datosMensaje(mensaje);
-    		    });
-       
-        Echo.join('messenger')
+                });
+            
+            Echo.join('messenger')
             .here((users)=>{
                 //los que ya estan en el canala tambiene estan online  
-                users.forEach((user) => this.cambiarEstadoOnline(user, true));
+                users.forEach((user) => this.cambiarEstadoOnline(user.id, true
+                ));
+                this.listarConversaciones();
             })
             .joining((user)=>{
-                this.cambiarEstadoOnline(user,true);
+                this.cambiarEstadoOnline(user.id,true);
+                this.listarConversaciones();
             })
             .leaving((user)=>{
-                this.cambiarEstadoOnline(user,false);
-            });
+                this.cambiarEstadoOnline(user.id,false);
+                this.listarConversaciones();
+            });        
+    },
+    watch: {
+        dMensaje(){
+            this.listarConversaciones();
+        }
     }
 }
 </script>

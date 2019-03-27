@@ -11,4 +11,13 @@ class ConversacionController extends Controller
     {
         return $respuesta = Conversacion::listarConversaciones();
     }
+
+    public function cambiarEstadoOnline(Request $request)
+    {   
+              
+        $array = array('id'=>$request->id,
+                       'online'=>$request->online);
+        
+        $res = Conversacion::cambiarEstadoOnlineModel($array);
+    }
 }

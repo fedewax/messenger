@@ -55,7 +55,7 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" @click="logout()">
+                                    <a class="dropdown-item" @click="logout( {{ Auth::user()->id }} )">
                                        Cerrar sesion
                                     </a>
 

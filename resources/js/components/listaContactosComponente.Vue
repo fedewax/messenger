@@ -16,34 +16,24 @@
 <script>
 export default {
     props:{
-        dMensaje : Object
+        dMensaje : Object,
+        conversaciones : Array
     }, 
     data() {
         return {
-            conversaciones: []
+        
         }
     },
     methods: {
-        listarConversaciones(){
-            axios.get('/conversaciones')
-            .then((response) => {
-                this.conversaciones = response.data;
-                this.$emit('listaDeConversaciones', this.conversaciones);
-            });
-        },
+       
         seleccionarConversacion(conversacion){
             //si se ejecuta el metodo seleccionarConversacion mandamos ejecutar conversacion seleccionada desde el componente padre.
             this.$emit('conversacionSeleccionada',conversacion);
         }
     },
     mounted() {
-        this.listarConversaciones();
-    },
-    watch: {
-        dMensaje(){
-            this.listarConversaciones();
-        }
     }
+    
 }
 </script>
 
