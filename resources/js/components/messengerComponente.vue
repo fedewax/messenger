@@ -2,9 +2,13 @@
 <b-container fluid style="height: 83%">
    <b-row>
         <b-col cols="4">
+             <b-form class="my-3 mx-2">
+                <b-form-input class="text-center" type="text" v-model="buscar" placeholder="Buscar contacto">
+                </b-form-input>
+            </b-form>
             <!--aqui mandamos llamar al metedo conversacionSeleccionada del componente lista-contactos -->    
            <lista-contactos-componente v-on:conversacionSeleccionada="cargarConversacion($event)"
-           :conversaciones="conversaciones"
+           :conversaciones="conversacionesFiltradas"
            :dMensaje="dMensaje">
            <!--v-on:listaDeConversaciones="listaDeConversaciones($event)"-->
            </lista-contactos-componente>
@@ -32,7 +36,8 @@ export default {
             datosConversacion : null,
             mensajes : [],
             dMensaje : null,
-            conversaciones : []
+            conversaciones : [],
+            buscar: ''
         }
     },
     methods: {
@@ -77,10 +82,10 @@ export default {
                 id : id,
                 online : status
                 };
-                axios.post('/cambiarEstadoOnline',params)
-                .then((response)=>{
-                    console.log(response.data);
-                });
+                axios.post('/cambiarEstadoOnline',params);
+                //.then((response)=>{
+                  //  console.log(response.data);
+                //});
         },
       
     },
@@ -113,7 +118,16 @@ export default {
         dMensaje(){
             this.listarConversaciones();
         }
-    }
+    },
+    computed: {
+        //metodo para hacer busqueda de conversaciones.
+        conversacionesFiltradas() {
+            //includes diferencia entre mayudsucas y minusculas usamos tolowerCase 
+            return this.conversaciones.filter((conversacion)=> 
+            conversacion.nombre_contacto.toLowerCase()
+            .includes(this.buscar.toLowerCase()));
+        },
+    },
 }
 </script>
 

@@ -18,6 +18,6 @@ class ConversacionController extends Controller
         $array = array('id'=>$request->id,
                        'online'=>$request->online);
         
-        $res = Conversacion::cambiarEstadoOnlineModel($array);
+        Conversacion::cambiarEstadoOnlineModel($array);
     }
 }

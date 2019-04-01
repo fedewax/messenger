@@ -1,11 +1,18 @@
+require('@fortawesome/fontawesome');
+require('@fortawesome/fontawesome-free-solid');
+require('@fortawesome/fontawesome-free-regular');
+require('@fortawesome/fontawesome-free-brands');
+
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 window._ = require('lodash');
 
+
+//libreria de laravel echo y pusher
 import Echo from 'laravel-echo'
 
  window.Pusher = require('pusher-js');
-
+//llaves para conectarme al servidor
  window.Echo = new Echo({
      broadcaster: 'pusher',
      key: 'c2d4ea755b6afbb4f079',
@@ -55,5 +62,3 @@ if (token) {
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.
  */
-
- 

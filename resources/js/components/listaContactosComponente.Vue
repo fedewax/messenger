@@ -1,9 +1,4 @@
-<template>
-<div>
-    <b-form class="my-3 mx-2">
-                <b-form-input class="text-center" type="text" placeholder="Buscar contacto">
-                </b-form-input>
-    </b-form>
+<template>  
     <b-list-group>
                 <contacto-componente v-for="conversacion in conversaciones" :key="conversacion.id"
                 :conversacion="conversacion"
@@ -11,7 +6,6 @@
                 @click.native="seleccionarConversacion(conversacion)">
                 </contacto-componente>
     </b-list-group>
-</div>
 </template>
 <script>
 export default {

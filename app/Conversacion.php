@@ -56,6 +56,6 @@ class Conversacion extends Model
 
     public static function cambiarEstadoOnlineModel($array)
     {
-        $obj = Conversacion::where('contacto_id', $array["id"])->update(['online'=> $array["online"]]);
+        Conversacion::where('contacto_id', $array["id"])->update(['online'=> $array["online"]]);
     }
 }

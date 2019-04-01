@@ -26,3 +26,10 @@ Route::post('cambiarEstadoOnline' , 'ConversacionController@cambiarEstadoOnline'
 //rutas mensajes
 Route::get('/mensajes','MensajeController@index');
 Route::post('/mensajes/agregar','MensajeController@store');
+
+//Rutas usuarios
+Route::get('/usuarios/datosUsuario','UsuarioController@datosUsuario');
+Route::post('/usuarios/modificar','UsuarioController@actualizarUsuario');
+Route::get('/usuarios/comprobarEmail','UsuarioController@comprobarEmail');
+
+
