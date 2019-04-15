@@ -23,11 +23,14 @@ class UsuarioController extends Controller
         {
             $respuesta = User::obtenerImagenUsuario($request->id);
             $nombreImagenAnterior = $respuesta["imagen"];
+            if($nombreImagenAnterior != '')
+            {
             //si existe una imagen con ese nombre en la carpeta la borra con el metodo unlink.
-            if(file_exists(public_path('imagenes/').$nombreImagenAnterior))
-                unlink(public_path('imagenes/').$nombreImagenAnterior);
-            else
-                dd('El archivo no existe.');
+                if(file_exists(public_path('imagenes/').$nombreImagenAnterior))
+                    unlink(public_path('imagenes/').$nombreImagenAnterior);
+                else
+                    dd('El archivo no existe.');
+            }
             
             $imagen = $request->imagen;
             //sacar nombre de la imagen
