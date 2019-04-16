@@ -31,6 +31,7 @@
     "bootstrap-vue": "^2.0.0-rc.11",
     "laravel-echo": "^1.5.3",
     "pusher-js": "^4.4.0",
-    "vue-material": "^1.0.0-beta-7"
+    "vue-material": "^1.0.0-beta-7",
+    "vue-picture-input": "^2.1.6"
   }
 }

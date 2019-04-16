@@ -6,15 +6,20 @@
                             
                             <i  slot="header" class="mt-2 fas fa-user-edit float-right"></i>
                             <p slot="header" class="mt-2" ><strong>INFORMACION PERSONAL</strong></p>
-                           
-                            <a title="Editar perfil" @click="mostrarModal()" style="cursor:hand"><i class="fas fa-pencil-alt float-right"></i></a>
-                            <p>Usuario: {{datosUsuario.name}}</p>                            
-                            <hr/>
+
+                            <b-row>
+                               <b-col cols="6" md="12" sm="12"> 
+                                    <b-button title="Editar perfil" class="float-right" variant="info" @click="mostrarModal()"><i class="fas fa-pencil-alt float-right"></i></b-button>                         
+                                <p>Usuario: {{datosUsuario.name}}</p>   
+                               
+                                <hr/>
+                               </b-col>
+                            </b-row>
 
                             <p>Correo electronico: {{datosUsuario.email}}</p>
                             <hr/>
 
-                            <b-img v-bind="mainProps" class="float-right" rounded alt="Rounded image"></b-img>
+                            <b-img v-bind="mainProps" v-bind:src="'../../../imagenes/'+datosUsuario.imagen"  class="float-right" rounded alt="Rounded image"></b-img>
                             <p >Imagen de perfil: </p>
 
                         </b-card>
@@ -52,11 +57,11 @@
                                 <label for="input-valid">Confirmar nueva contraseña:</label>
                                 </b-col>
                                 <b-col sm="8" >
-                                <b-form-input  placeholder="Contraseña anterior"></b-form-input>
+                                <b-form-input  placeholder="Confirmar nueva contraseña"></b-form-input>
                             </b-col>
                                 
                             </b-row>
-                            <b-button variant="info" class="float-right">Guardar cambios</b-button>
+                            <b-button variant="success" class="float-right">Restaurar</b-button>
                            
                         </b-card>
                     </b-col>
@@ -88,9 +93,12 @@
                                 <label for="input-valid">Correo electronico:</label>
                                 </b-col>
                                 <b-col sm="8" >
-                                <input v-model="email" @keyup="comprobarEmail()" placeholder="Correo electronico" class="form-control">
+                                <input type="email" v-model="email" @keyup="comprobarEmail()" placeholder="Correo electronico" class="form-control">
                                 <div v-show="emailRegistrado" class="form-group">
                                     <p style="color:red;">Este correo electronico ya se encuentra en uso.</p>
+                                </div>
+                                <div v-show="errorEmail" class="form-group">
+                                    <p style="color:red;">Por favor escriba un correo valido.</p>
                                 </div>
                                 </b-col>
                             </b-row>
@@ -101,15 +109,22 @@
                                 <label for="input-valid">Imagen de perfil:</label>
                                 </b-col>
                                 <b-col sm="8" >
-                                    <b-form-file
+                                    <b-form-file @change="onImageChange" 
+                                        accept=".jpg, .png"
                                         v-model="file"
                                         :state="Boolean(file)"
-                                        placeholder="Choose a file..."
-                                        drop-placeholder="Drop file here..."
-                                        v-on:change="onImageChange"
-                                        >
-                                    </b-form-file>
-                                    <div class="mt-3">Selected file: {{ file ? file.name : '' }}</div>
+                                        placeholder="Elige una imagen"
+                                        browse-text="Buscar imagen"></b-form-file>
+                                    
+                                    <div class="mt-3">Imagen seleccionada: {{ file ? file.name : '' }}
+                                        <button type="button" v-show="file" class="close" @click="file=null,url=null,imagen=''" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                
+                                    <div id="preview">
+                                        <b-img v-if="url" rounded alt="Rounded image" :src="url"> </b-img>
+                                    </div>
                                 </b-col>
                              </b-row>   
                         </div>
@@ -134,9 +149,12 @@
                         </div>
                     </b-modal>
                 </div>
+                <!--fin de la ventana modal-->
             </b-container>
 </template>
 <script>
+
+import Swal from 'sweetalert2'
 
 export default {
     
@@ -145,16 +163,19 @@ export default {
     },
     data() {
         return {
+            url: null,
             file : null,
             datosUsuario : [],
             name : '',
             email : '',
             id : 0,
             emailRegistrado : false, 
-            mainProps : { blank: true, blankColor: '#777', width: 129, height: 129, class: 'm1' },
-            imagen : ''
+            mainProps : { width: 230, height: 130, class: 'm1' },
+            imagen : '',
+            errorEmail : false
         }
     },
+   
     methods: {
         obtenerDatosUsuario(){
              axios.get('/usuarios/datosUsuario?id='+this.user_id)
@@ -166,6 +187,11 @@ export default {
             });
         },
         actualizarUsuario(){
+            if(!this.validEmail())
+            {
+                this.errorEmail = true;
+                return;
+            }
             if(this.emailRegistrado)
             return;
             const params = {
@@ -176,7 +202,7 @@ export default {
             };
             axios.post('/usuarios/modificar',params)
             .then((response)=>{ 
-                alert("datos actualizados");
+                this.mensajeActualizar();
                 this.ocultarModal();
                 this.obtenerDatosUsuario();
             });
@@ -187,6 +213,10 @@ export default {
         ocultarModal() {
             this.$refs['my-modal'].hide();
             this.emailRegistrado = false;
+            this.errorEmail = false;
+            this.file = null;
+            this.url = null;
+            this.imagen = '';
         },
         comprobarEmail(){
             let me=this;
@@ -200,6 +230,10 @@ export default {
             });
         },
         onImageChange(e) {
+                //estas dos lineas son para crear la imagen creo xd...
+                const file = e.target.files[0];
+                this.url = URL.createObjectURL(file);
+                
                 let files = e.target.files || e.dataTransfer.files;
                 if (!files.length)
                     return;
@@ -212,11 +246,36 @@ export default {
                 me.imagen = e.target.result;
             };
             reader.readAsDataURL(file);
-        }  
+        },
+        mensajeActualizar(){
+            Swal.fire({
+            type: 'success',
+            title: 'Informacion actualizada con exito!',
+            showConfirmButton: false,
+            timer: 1500
+            })
+        },
+        validEmail(){
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(this.email);
+        }     
     },
     mounted() {
         this.obtenerDatosUsuario();     
-    },
+    }
 }
 </script>
+<style>
+#preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#preview img {
+  max-width: 50%;
+  max-height: 25%;
+}
+</style>
+
 

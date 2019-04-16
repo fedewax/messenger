@@ -39,7 +39,10 @@ class User extends Authenticatable
         $obj = User::find($array["id"]);
         $obj->name = $array["name"];
         $obj->email = $array["email"];
-        $obj->imagen = $array["imagen"];
+        if(isset($array["imagen"]))
+        {
+            $obj->imagen = $array["imagen"];
+        }
         $obj->save();
     }
 

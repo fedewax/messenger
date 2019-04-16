@@ -8,6 +8,8 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 window._ = require('lodash');
 
 
+
+
 //libreria de laravel echo y pusher
 import Echo from 'laravel-echo'
 
@@ -19,6 +21,8 @@ import Echo from 'laravel-echo'
      cluster: 'us3',
      encrypted: true
  });
+
+ import PictureInput from 'vue-picture-input'
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support

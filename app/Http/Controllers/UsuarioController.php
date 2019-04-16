@@ -23,6 +23,7 @@ class UsuarioController extends Controller
         {
             $respuesta = User::obtenerImagenUsuario($request->id);
             $nombreImagenAnterior = $respuesta["imagen"];
+            
             if($nombreImagenAnterior != '')
             {
             //si existe una imagen con ese nombre en la carpeta la borra con el metodo unlink.
@@ -36,12 +37,19 @@ class UsuarioController extends Controller
             //sacar nombre de la imagen
             $nombreImagen =time().'.' . explode('/', explode(':', substr($imagen, 0, strpos($imagen, ';')))[1])[1];
             //guardar en la carpeta y poner nombre al archivo de la imagen
-            Image::make($request->imagen)->save(public_path('imagenes/').$nombreImagen);   
+            Image::make($request->imagen)->save(public_path('imagenes/').$nombreImagen);  
+            
+            $array = array('name'  => $request->name,
+            'email' => $request->email,
+            'id'    => $request->id,
+            'imagen'=> $nombreImagen); 
         }
-        $array = array('name'  => $request->name,
-                       'email' => $request->email,
-                       'id'    => $request->id,
-                       'imagen'=> $nombreImagen);
+        else
+        {
+            $array = array('name'  => $request->name,
+            'email' => $request->email,
+            'id'    => $request->id); 
+        } 
                      
         User::actualizarUsuarioModel($array);
     }
