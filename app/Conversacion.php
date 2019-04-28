@@ -11,7 +11,7 @@ class Conversacion extends Model
 
     protected $filelable = [
         'id','usuario_id','contacto_id','ultimo_mensaje','tiempo_mensaje','notificacion','bloqueado', 'user_ultimo_mensaje','online',
-        'users.id','users.name as nombre_contacto',
+        'users.id','users.name as nombre_contacto','users.imagen',
         'conversaciones.id','conversaciones.usuario_id','conversaciones.contacto_id','conversaciones.ultimo_mensaje',
         'conversaciones.notificacion','conversaciones.bloqueado','conversaciones.user_ultimo_mensaje','conversaciones.online'
     ];
@@ -24,11 +24,13 @@ class Conversacion extends Model
     {
         return self::join('users','users.id','=','conversaciones.contacto_id')
         ->select('conversaciones.id','usuario_id','contacto_id','ultimo_mensaje','tiempo_mensaje','notificacion','bloqueado','user_ultimo_mensaje','online',
-        'users.id','users.name as nombre_contacto',
+        'users.id','users.name as nombre_contacto','users.imagen',
         'conversaciones.id','conversaciones.usuario_id','conversaciones.contacto_id','conversaciones.ultimo_mensaje',
         'conversaciones.notificacion','conversaciones.bloqueado','conversaciones.user_ultimo_mensaje','conversaciones.online')
         ->Where('usuario_id', auth()->id())->get();
     }
+
+    //hacer rl iinner join para sacar la imagen
 
     public static function actUiltimoMensaje($array)
     {

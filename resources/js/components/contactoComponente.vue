@@ -2,7 +2,7 @@
     <b-list-group-item  >
         <b-row class="p-2" algin-h="center">
             <b-col cols="12" md="3" class="text-center">
-                <b-img rounded="circle" blank width="60" heigth="60" blank-color="#777" alt="img" class="m-1"/>
+                <b-img rounded="circle"  width="60" heigth="60" v-bind:src="'../../../imagenes/'+conversacion.imagen" alt="img"/>
             </b-col>
             
             <b-col cols="6" algin-self="center" class="d-none d-md-block">

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use Image;
+use Illuminate\Support\Facades\Hash;
+use Auth;
+
 
 class UsuarioController extends Controller
 {
@@ -64,5 +67,22 @@ class UsuarioController extends Controller
             return response()->json(false);
         else
             return response()->json(true); 
+    }
+
+    public function modificarClave (Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+        
+        $email = Auth::user()->email;
+        $userdata = array('email' => $email,'password' => $request->claveActual);
+        
+        if(Auth::attempt($userdata))
+        {
+            $id = Auth()->user()->id;
+            User::modificarClaveModel(bcrypt($request->claveNueva),$id);
+            return response()->json(true); 
+        }
+        else 
+        return response()->json(false); 
     }
 }

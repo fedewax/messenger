@@ -7481,6 +7481,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -7501,7 +7510,13 @@ __webpack_require__.r(__webpack_exports__);
         "class": 'm1'
       },
       imagen: '',
-      errorEmail: false
+      errorEmail: false,
+      claveActual: '',
+      claveNueva: '',
+      claveNueva2: '',
+      camposVacios: false,
+      claveCorta: false,
+      clavesDiferentes: false
     };
   },
   methods: {
@@ -7583,6 +7598,72 @@ __webpack_require__.r(__webpack_exports__);
         title: 'Informacion actualizada con exito!',
         showConfirmButton: false,
         timer: 1500
+      });
+    },
+    camposClaveVacios: function camposClaveVacios() {
+      if (!this.claveActual || !this.claveNueva || !this.claveNueva2) {
+        this.camposVacios = true;
+        return true;
+      } else {
+        this.camposVacios = false;
+        return false;
+      }
+    },
+    validarClavesNuevas: function validarClavesNuevas() {
+      if (this.claveNueva.length < 6 || this.claveNueva2.length < 6) {
+        this.claveCorta = true;
+        return true;
+      } else {
+        this.claveCorta = false;
+        return false;
+      }
+    },
+    validadClavesDistintas: function validadClavesDistintas() {
+      if (this.claveNueva != this.claveNueva2) {
+        this.clavesDiferentes = true;
+        return;
+      } else {
+        this.clavesDiferentes = false;
+      }
+    },
+    mensajeContrasena: function mensajeContrasena() {
+      var _this3 = this;
+
+      if (this.camposClaveVacios()) return;
+      if (this.validarClavesNuevas()) return;
+      if (this.validadClavesDistintas()) return;
+      sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a.fire({
+        title: 'Estas seguro?',
+        text: "Vas a cambiar tu contraseña!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, cambiar!',
+        cancelButtonText: 'Cancelar'
+      }).then(function (result) {
+        if (result.value) {
+          var params = {
+            claveActual: _this3.claveActual,
+            claveNueva: _this3.claveNueva
+          };
+          axios.post('/usuarios/modificarClave', params).then(function (response) {
+            console.log(response.data);
+
+            if (response.data == true) {
+              sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a.fire('Exito!', 'Contraseña cambiada con exito.');
+              _this3.claveActual = '';
+              _this3.claveNueva = '';
+              _this3.claveNueva2 = '';
+            } else {
+              sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Su contraseña anterior esta incorrecta!'
+              });
+            }
+          });
+        }
       });
     },
     validEmail: function validEmail() {
@@ -82018,22 +82099,40 @@ var render = function() {
                   _vm._v(" "),
                   _c("hr"),
                   _vm._v(" "),
-                  _c(
-                    "b-img",
-                    _vm._b(
-                      {
-                        staticClass: "float-right",
-                        attrs: {
-                          src: "../../../imagenes/" + _vm.datosUsuario.imagen,
-                          rounded: "",
-                          alt: "Rounded image"
-                        }
-                      },
-                      "b-img",
-                      _vm.mainProps,
-                      false
-                    )
-                  ),
+                  _vm.datosUsuario.imagen == null
+                    ? _c(
+                        "b-img",
+                        _vm._b(
+                          {
+                            staticClass: "float-right",
+                            attrs: {
+                              src: "../../../imagenes/noProfile.png",
+                              rounded: "",
+                              alt: "Rounded image"
+                            }
+                          },
+                          "b-img",
+                          _vm.mainProps,
+                          false
+                        )
+                      )
+                    : _c(
+                        "b-img",
+                        _vm._b(
+                          {
+                            staticClass: "float-right",
+                            attrs: {
+                              src:
+                                "../../../imagenes/" + _vm.datosUsuario.imagen,
+                              rounded: "",
+                              alt: "Rounded image"
+                            }
+                          },
+                          "b-img",
+                          _vm.mainProps,
+                          false
+                        )
+                      ),
                   _vm._v(" "),
                   _c("p", [_vm._v("Imagen de perfil: ")])
                 ],
@@ -82082,7 +82181,17 @@ var render = function() {
                         { attrs: { sm: "8" } },
                         [
                           _c("b-form-input", {
-                            attrs: { placeholder: "Contraseña actual" }
+                            attrs: {
+                              type: "password",
+                              placeholder: "Contraseña actual"
+                            },
+                            model: {
+                              value: _vm.claveActual,
+                              callback: function($$v) {
+                                _vm.claveActual = $$v
+                              },
+                              expression: "claveActual"
+                            }
                           })
                         ],
                         1
@@ -82108,7 +82217,17 @@ var render = function() {
                         { attrs: { sm: "8" } },
                         [
                           _c("b-form-input", {
-                            attrs: { placeholder: "Nueva contraseña" }
+                            attrs: {
+                              type: "password",
+                              placeholder: "Nueva contraseña"
+                            },
+                            model: {
+                              value: _vm.claveNueva,
+                              callback: function($$v) {
+                                _vm.claveNueva = $$v
+                              },
+                              expression: "claveNueva"
+                            }
                           })
                         ],
                         1
@@ -82134,8 +82253,84 @@ var render = function() {
                         { attrs: { sm: "8" } },
                         [
                           _c("b-form-input", {
-                            attrs: { placeholder: "Confirmar nueva contraseña" }
-                          })
+                            attrs: {
+                              type: "password",
+                              placeholder: "Confirmar nueva contraseña"
+                            },
+                            model: {
+                              value: _vm.claveNueva2,
+                              callback: function($$v) {
+                                _vm.claveNueva2 = $$v
+                              },
+                              expression: "claveNueva2"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: _vm.camposVacios,
+                                  expression: "camposVacios"
+                                }
+                              ],
+                              staticClass: "form-group"
+                            },
+                            [
+                              _c("p", { staticStyle: { color: "red" } }, [
+                                _vm._v(
+                                  "Completa todos los campos para continuar..."
+                                )
+                              ])
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: _vm.claveCorta,
+                                  expression: "claveCorta"
+                                }
+                              ],
+                              staticClass: "form-group"
+                            },
+                            [
+                              _c("p", { staticStyle: { color: "red" } }, [
+                                _vm._v(
+                                  "La contraseña debe tener minimio 6 digitos..."
+                                )
+                              ])
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: _vm.clavesDiferentes,
+                                  expression: "clavesDiferentes"
+                                }
+                              ],
+                              staticClass: "form-group"
+                            },
+                            [
+                              _c("p", { staticStyle: { color: "red" } }, [
+                                _vm._v(
+                                  "La contraseñas nuevas contraseñas no coinciden..."
+                                )
+                              ])
+                            ]
+                          )
                         ],
                         1
                       )
@@ -82147,7 +82342,12 @@ var render = function() {
                     "b-button",
                     {
                       staticClass: "float-right",
-                      attrs: { variant: "success" }
+                      attrs: { variant: "success" },
+                      on: {
+                        click: function($event) {
+                          return _vm.mensajeContrasena()
+                        }
+                      }
                     },
                     [_vm._v("Restaurar")]
                   )
@@ -82497,13 +82697,11 @@ var render = function() {
             { staticClass: "text-center", attrs: { cols: "12", md: "3" } },
             [
               _c("b-img", {
-                staticClass: "m-1",
                 attrs: {
                   rounded: "circle",
-                  blank: "",
                   width: "60",
                   heigth: "60",
-                  "blank-color": "#777",
+                  src: "../../../imagenes/" + _vm.conversacion.imagen,
                   alt: "img"
                 }
               })
@@ -95253,7 +95451,7 @@ var app = new Vue({
   el: '#app',
   data: function data() {
     return {
-      menu: 1
+      menu: 0
     };
   },
   methods: {

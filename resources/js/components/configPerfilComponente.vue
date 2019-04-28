@@ -18,8 +18,8 @@
 
                             <p>Correo electronico: {{datosUsuario.email}}</p>
                             <hr/>
-
-                            <b-img v-bind="mainProps" v-bind:src="'../../../imagenes/'+datosUsuario.imagen"  class="float-right" rounded alt="Rounded image"></b-img>
+                            <b-img v-if="datosUsuario.imagen == null " v-bind="mainProps" v-bind:src="'../../../imagenes/noProfile.png'"  class="float-right" rounded alt="Rounded image"></b-img>
+                            <b-img v-else v-bind="mainProps" v-bind:src="'../../../imagenes/'+datosUsuario.imagen"  class="float-right" rounded alt="Rounded image"></b-img>
                             <p >Imagen de perfil: </p>
 
                         </b-card>
@@ -37,7 +37,7 @@
                                 <label for="input-valid">Contraseña actual:</label>
                                 </b-col>
                                 <b-col sm="8" >
-                                <b-form-input  placeholder="Contraseña actual"></b-form-input>
+                                <b-form-input v-model="claveActual" type="password" placeholder="Contraseña actual"></b-form-input>
                                 </b-col>
                             </b-row>
                             <hr/>
@@ -47,7 +47,7 @@
                                 <label for="input-valid">Nueva contraseña:</label>
                                 </b-col>
                                 <b-col sm="8" >
-                                <b-form-input  placeholder="Nueva contraseña"></b-form-input>
+                                <b-form-input v-model="claveNueva" type="password" placeholder="Nueva contraseña"></b-form-input>
                                 </b-col>
                             </b-row>
                             <hr/>
@@ -57,11 +57,20 @@
                                 <label for="input-valid">Confirmar nueva contraseña:</label>
                                 </b-col>
                                 <b-col sm="8" >
-                                <b-form-input  placeholder="Confirmar nueva contraseña"></b-form-input>
+                                <b-form-input v-model="claveNueva2" type="password" placeholder="Confirmar nueva contraseña"></b-form-input>
+                                <div v-show="camposVacios" class="form-group">
+                                    <p style="color:red;">Completa todos los campos para continuar...</p>
+                                </div>
+                                <div v-show="claveCorta" class="form-group">
+                                    <p style="color:red;">La contraseña debe tener minimio 6 digitos...</p>
+                                </div>
+                                <div v-show="clavesDiferentes" class="form-group">
+                                    <p style="color:red;">La contraseñas nuevas contraseñas no coinciden...</p>
+                                </div>
                             </b-col>
                                 
                             </b-row>
-                            <b-button variant="success" class="float-right">Restaurar</b-button>
+                            <b-button variant="success" @click="mensajeContrasena()" class="float-right">Restaurar</b-button>
                            
                         </b-card>
                     </b-col>
@@ -172,7 +181,13 @@ export default {
             emailRegistrado : false, 
             mainProps : { width: 230, height: 130, class: 'm1' },
             imagen : '',
-            errorEmail : false
+            errorEmail : false,
+            claveActual : '',
+            claveNueva : '',
+            claveNueva2 : '',
+            camposVacios : false,
+            claveCorta : false,
+            clavesDiferentes : false
         }
     },
    
@@ -253,6 +268,86 @@ export default {
             title: 'Informacion actualizada con exito!',
             showConfirmButton: false,
             timer: 1500
+            })
+        },
+        camposClaveVacios(){
+            if(!this.claveActual || !this.claveNueva || !this.claveNueva2)
+            {
+                this.camposVacios = true;     
+                return true;
+            }
+            else 
+            {
+                this.camposVacios = false;
+                return false;
+            }
+        },
+        validarClavesNuevas(){
+            if(this.claveNueva.length <6 || this.claveNueva2.length <6)
+            {
+                this.claveCorta = true;
+                return true;
+            }
+            else
+            {
+                this.claveCorta = false;
+                return false;
+            }
+        },
+        validadClavesDistintas(){
+            if(this.claveNueva != this.claveNueva2)
+            {   
+                this.clavesDiferentes = true;
+                return;
+            }
+            else
+            {
+                this.clavesDiferentes = false;
+            }
+        },
+        mensajeContrasena(){
+            if(this.camposClaveVacios())
+                return;
+            if(this.validarClavesNuevas())
+                return;
+            if(this.validadClavesDistintas())
+                return;
+            Swal.fire({
+            title: 'Estas seguro?',
+            text: "Vas a cambiar tu contraseña!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, cambiar!',
+            cancelButtonText : 'Cancelar'
+            }).then((result) => {
+                if (result.value) {
+                    const params = {
+                       claveActual : this.claveActual,
+                       claveNueva : this.claveNueva
+                    };
+                    axios.post('/usuarios/modificarClave',params)
+                    .then((response)=>{
+                        console.log(response.data);
+                        if(response.data == true){
+                            Swal.fire(
+                            'Exito!',
+                            'Contraseña cambiada con exito.',
+                            )
+                            this.claveActual = '';
+                            this.claveNueva = '';
+                            this.claveNueva2 = '';
+                        }
+                        else{
+                            Swal.fire({
+                            type: 'error',
+                            title: 'Oops...',
+                            text: 'Su contraseña anterior esta incorrecta!',
+                            })
+                        }
+                    });
+                }
             })
         },
         validEmail(){

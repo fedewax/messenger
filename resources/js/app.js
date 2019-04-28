@@ -22,7 +22,7 @@ const app = new Vue({
     el: '#app',
     data() {
         return {
-            menu : 1
+            menu : 0
         }
     },
     

@@ -8,27 +8,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use DB;
 
 class User extends Authenticatable
-{
-    use Notifiable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+{ 
     protected $fillable = [
         'name', 'email', 'password',
     ];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
-
+    
     public static function obtenerDatosUsaurio ($id)
     {
         return self::where('id', $id)->first();
@@ -56,5 +43,10 @@ class User extends Authenticatable
         return self::select('imagen')->where('id', $id)->first();
     }
 
-
+    public static function modificarClaveModel($password, $id)
+    {
+        $obj = User::find($id);
+        $obj->password = $password;
+        $obj->save();   
+    }
 }
