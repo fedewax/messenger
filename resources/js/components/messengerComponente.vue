@@ -20,7 +20,8 @@
            v-if="datosConversacion" 
            :contacto_id="datosConversacion.contacto_id"
            :nombre_contacto="datosConversacion.nombre_contacto"
-           :mensajes="mensajes">
+           :imagen_contacto="datosConversacion.imagen"
+           :usuario_id="datosConversacion.usuario_id">
            </conversacion-componente>
         </b-col>
    </b-row>
@@ -34,7 +35,6 @@ export default {
     data() {
         return {
             datosConversacion : null,
-            mensajes : [],
             dMensaje : null,
             conversaciones : [],
             buscar: ''
@@ -55,7 +55,7 @@ export default {
         listarMensajes(){
             axios.get('/mensajes?contacto_id='+this.datosConversacion.contacto_id)
             .then((response) => {
-                this.mensajes = response.data;
+                this.$store.commit('mensajesMuta', response.data); 
             });
         },
         datosMensaje(_mensaje){
@@ -66,7 +66,7 @@ export default {
                 if(this.datosConversacion.contacto_id == _mensaje.emisor_id
                 || this.datosConversacion.contacto_id == _mensaje.receptor_id)
                 {
-                   this.mensajes.push(mensaje);
+                   this.$store.commit('agregarMensajeMuta', mensaje);
                 }
             }
         },

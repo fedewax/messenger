@@ -2,10 +2,11 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
-
+import Vue from 'vue'
+import Vuex from 'vuex'
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue);
+Vue.use(Vuex);
 
 
 Vue.component('contacto-componente', require('./components/contactoComponente.vue').default);
@@ -17,9 +18,24 @@ Vue.component('messenger-componente', require('./components/messengerComponente.
 Vue.component('info-contacto-componente', require('./components/infoContactoComponente.vue').default);
 Vue.component('config-perfil-componente', require('./components/configPerfilComponente.vue').default);
 
+const store = new Vuex.Store({
+    state: {
+      mensajes : []
+    },
+    mutations: {
+        mensajesMuta(state, mensajes){
+            state.mensajes = mensajes;
+        },
+        agregarMensajeMuta(state,mensaje){
+            state.mensajes.push(mensaje);
+        }
+
+    }
+});
 
 const app = new Vue({
     el: '#app',
+    store,
     data() {
         return {
             menu : 0

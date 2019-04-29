@@ -29,6 +29,7 @@ Route::post('/mensajes/agregar','MensajeController@store');
 
 //Rutas usuarios
 Route::get('/usuarios/datosUsuario','UsuarioController@datosUsuario');
+Route::get('/usuarios/imagenUsuario','UsuarioController@imagenUsuario');
 Route::post('/usuarios/modificar','UsuarioController@actualizarUsuario');
 Route::get('/usuarios/comprobarEmail','UsuarioController@comprobarEmail');
 Route::post('/usuarios/modificarClave','UsuarioController@modificarClave');

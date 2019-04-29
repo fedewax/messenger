@@ -17,7 +17,11 @@ class UsuarioController extends Controller
 
         return $respuesta = User::obtenerDatosUsaurio($request->id);
     }
-
+    public function imagenUsuario(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+        return $r = User::obtenerImagenUsuario($request->id);
+    }
     public function actualizarUsuario(Request $request)
     {
         if (!$request->ajax()) return redirect('/');

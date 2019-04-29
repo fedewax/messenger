@@ -18,7 +18,10 @@
                            <mensaje-componente v-for="mensaje in mensajes" 
                            :key="mensaje.id"
                            :miMensaje="mensaje.escrito_por_mi"
-                           :mensaje ="mensaje.contenido">
+                           :mensaje ="mensaje.contenido"
+                           :imagen_contacto="imagen_contacto"
+                           :imagen_usuario="imagen_usuario"
+                           :usuario_id="usuario_id">
                            </mensaje-componente>
                           </b-card-body>
                         
@@ -36,26 +39,24 @@
                         
                     </b-card>         
                 </b-col>
-                <b-col cols="4">
-                     <b-img rounded="circle" blank width="60" heigth="60" blank-color="#777" alt="img" class="m-1"/>
-                     <p>Usuario seleccioando</p>
-                     <strong>{{ nombre_contacto }}</strong>
-                     <hr>
-                     <b-form-checkbox>Desactivar las notificaciones</b-form-checkbox>
-                </b-col>
+               <info-contacto-componente :nombre_contacto="nombre_contacto"
+               :imagen_contacto="imagen_contacto">
+               </info-contacto-componente>
         </b-row>
     </div>
 </template>
 <script>
 export default {
     props:{
+        imagen_contacto : String,
         contacto_id : Number,
         nombre_contacto : String,
-        mensajes: Array
+        usuario_id : Number
     },
     data() {
         return {
-            mensaje : ''
+            mensaje : '',
+            imagen_usuario: ''
         }
     },
     methods: {
@@ -77,12 +78,20 @@ export default {
             });
             
         },
+         obtenerImagen(){
+             axios.get('/usuarios/imagenUsuario?id='+this.usuario_id)
+            .then((response) => {
+                let imagen = response.data.imagen;
+                this.imagen_usuario = imagen;
+            });
+        },
         scrollAbajo(){
             const a = document.querySelector('.card-body-cls');
             a.scrollTop = a.scrollHeight;
         }
     },
     mounted() {
+            this.obtenerImagen();
     },
     updated() {
         this.scrollAbajo();
@@ -94,5 +103,10 @@ export default {
       //    this.listarMensajes();
       //  }
     //},
+    computed: {
+        mensajes(){
+            return this.$store.state.mensajes;
+        }
+    },
 }
 </script>
