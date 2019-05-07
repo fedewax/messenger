@@ -2,13 +2,11 @@
 <b-container fluid style="height: 83%">
    <b-row>
         <b-col cols="4">
-             <b-form class="my-3 mx-2">
-                <b-form-input class="text-center" type="text" v-model="buscar" placeholder="Buscar contacto">
-                </b-form-input>
-            </b-form>
+            <b-conversacion-componente>
+
+            </b-conversacion-componente>
             <!--aqui mandamos llamar al metedo conversacionSeleccionada del componente lista-contactos -->    
-           <lista-contactos-componente v-on:conversacionSeleccionada="cargarConversacion($event)"
-           :conversaciones="conversacionesFiltradas"
+           <lista-contactos-componente
            :dMensaje="dMensaje">
            <!--v-on:listaDeConversaciones="listaDeConversaciones($event)"-->
            </lista-contactos-componente>
@@ -17,7 +15,7 @@
         <b-col cols="8">
            <conversacion-componente
            v-on:_datosMensaje="datosMensaje($event)"
-           v-if="datosConversacion" 
+           v-if="datosConversacion"
            :contacto_id="datosConversacion.contacto_id"
            :nombre_contacto="datosConversacion.nombre_contacto"
            :imagen_contacto="datosConversacion.imagen"
@@ -34,30 +32,10 @@ export default {
     },
     data() {
         return {
-            datosConversacion : null,
-            dMensaje : null,
-            conversaciones : [],
-            buscar: ''
+            dMensaje : null        
         }
     },
     methods: {
-        cargarConversacion(conversacion) {
-            this.datosConversacion = conversacion;
-            this.listarMensajes();
-        },
-         listarConversaciones(){
-            axios.get('/conversaciones')
-            .then((response) => {
-                this.conversaciones = response.data;
-            });
-            
-        },
-        listarMensajes(){
-            axios.get('/mensajes?contacto_id='+this.datosConversacion.contacto_id)
-            .then((response) => {
-                this.$store.commit('mensajesMuta', response.data); 
-            });
-        },
         datosMensaje(_mensaje){
             const mensaje = _mensaje 
             this.dMensaje = mensaje;
@@ -71,26 +49,15 @@ export default {
             }
         },
         cambiarEstadoOnline(id, status){
-                //const index = this.conversaciones.findIndex((conversacion) =>{
-                //   return conversacion.contacto_id == user.id;
-                //});
-                //if(index >= 0)
-                  //  Vue.set(this.conversaciones[index],'online', status);
-                //alert(id,status);
-
                 const params = {
                 id : id,
                 online : status
                 };
                 axios.post('/cambiarEstadoOnline',params);
-                //.then((response)=>{
-                  //  console.log(response.data);
-                //});
         },
-      
     },
     mounted() {
-        this.listarConversaciones();
+        this.$store.dispatch('listarConversaciones');
         Echo.private(`users.${this.user_id}`)
     		.listen('eventMensajeEnviado', data => {
                  const mensaje = data.mensaje;
@@ -103,30 +70,27 @@ export default {
                 //los que ya estan en el canala tambiene estan online  
                 users.forEach((user) => this.cambiarEstadoOnline(user.id, true
                 ));
-                this.listarConversaciones();
+                this.$store.dispatch('listarConversaciones');
             })
             .joining((user)=>{
                 this.cambiarEstadoOnline(user.id,true);
-                this.listarConversaciones();
+                this.$store.dispatch('listarConversaciones');
             })
             .leaving((user)=>{
                 this.cambiarEstadoOnline(user.id,false);
-                this.listarConversaciones();
+                this.$store.dispatch('listarConversaciones');
             });        
     },
     watch: {
         dMensaje(){
-            this.listarConversaciones();
+             this.$store.dispatch('listarConversaciones');
         }
     },
     computed: {
-        //metodo para hacer busqueda de conversaciones.
-        conversacionesFiltradas() {
-            //includes diferencia entre mayudsucas y minusculas usamos tolowerCase 
-            return this.conversaciones.filter((conversacion)=> 
-            conversacion.nombre_contacto.toLowerCase()
-            .includes(this.buscar.toLowerCase()));
-        },
+        datosConversacion(){
+            return this.$store.state.datosConversacion;
+        }
+
     },
 }
 </script>

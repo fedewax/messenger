@@ -50,8 +50,6 @@
                 mainProps: { width: 70, height: 70 }
             }
         },
-        mounted(){
-        },
         computed: {
             variant(){
                 

@@ -96,7 +96,7 @@ export default {
     updated() {
         this.scrollAbajo();
     },
-    //el watch sirve para ver cambos en variables props si cambia el valor de contato_id de la conversacion
+    //el watch sirve para ver cambos en variables props si cambia el vor de contato_id de la conversacion
     //volvemos a listar los mensajes de la nueva conversacion selecionada
     //watch: {
       //  contacto_id(){
@@ -105,8 +105,9 @@ export default {
     //},
     computed: {
         mensajes(){
+            //el state es solo para usar los datos sin modificarlos
             return this.$store.state.mensajes;
         }
-    },
+    }
 }
 </script>

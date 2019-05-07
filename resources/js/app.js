@@ -3,11 +3,9 @@
 require('./bootstrap');
 
 import Vue from 'vue'
-import Vuex from 'vuex'
 import BootstrapVue from 'bootstrap-vue'
+import store from './store' 
 Vue.use(BootstrapVue);
-Vue.use(Vuex);
-
 
 Vue.component('contacto-componente', require('./components/contactoComponente.vue').default);
 Vue.component('lista-contactos-componente', require('./components/listaContactosComponente.vue').default);
@@ -17,21 +15,10 @@ Vue.component('messenger-componente', require('./components/messengerComponente.
 Vue.component('messenger-componente', require('./components/messengerComponente.vue').default);
 Vue.component('info-contacto-componente', require('./components/infoContactoComponente.vue').default);
 Vue.component('config-perfil-componente', require('./components/configPerfilComponente.vue').default);
+Vue.component('b-conversacion-componente', require('./components/bConversacionComponente.vue').default);
 
-const store = new Vuex.Store({
-    state: {
-      mensajes : []
-    },
-    mutations: {
-        mensajesMuta(state, mensajes){
-            state.mensajes = mensajes;
-        },
-        agregarMensajeMuta(state,mensaje){
-            state.mensajes.push(mensaje);
-        }
 
-    }
-});
+
 
 const app = new Vue({
     el: '#app',
